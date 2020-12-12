@@ -7,6 +7,8 @@
     <title>Home - Keller Imoveis</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
+
+    @livewireStyles
 </head>
 <body>
     <h1>Keller Imoveis</h1>
@@ -15,5 +17,7 @@
 
     <script src="{{ asset('js/jquery.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
+
+    @livewireScripts
 </body>
 </html>
