@@ -1,18 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Livewire\Cliente\{
+    ListCliente,
+    CreateCliente
+};
 
-/*
-|--------------------------------------------------------------------------
-| Web Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| contains the "web" middleware group. Now create something great!
-|
-*/
+Route::get('/cliente', ListCliente::class)->name("cliente");
+Route::get('/cliente-novo', CreateCliente::class);
 
 Route::get('/', function () {
-    return view('home');
+    return view('welcome');
 });

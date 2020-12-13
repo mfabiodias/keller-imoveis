@@ -16,13 +16,13 @@ class CreateEnderecoTable extends Migration
         Schema::create('endereco', function (Blueprint $table) {
             $table->id();
             $table->foreignId('cliente_id')->constrained('cliente');
-            $table->timestamps();
             $table->string('rua', 100);
             $table->string('numero', 10);
-            $table->string('complemento', 100);
+            $table->string('complemento', 100)->nullable();
             $table->string('bairro', 100);
             $table->string('cidade', 50);
             $table->string('estado', 2);
+            $table->timestamps();
         });
     }
 

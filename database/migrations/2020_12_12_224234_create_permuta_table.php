@@ -17,7 +17,7 @@ class CreatePermutaTable extends Migration
             $table->id();
             $table->foreignId('imovel_id')->constrained('imovel');
             $table->foreignId('subtipo_id')->constrained('subtipo');
-            $table->json('caracteristica');
+            $table->json('caracteristica')->nullable();
             $table->timestamps();
         });
     }

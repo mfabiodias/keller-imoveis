@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Fabio Messias Dias <mfabiodias@gmail.com>">
-    <title>{{ $page }} | SysImóveis</title>
+    <title>{{ isset($page) ? $page ." |" : "" }} Keller Imóveis</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
@@ -40,24 +40,22 @@
         </nav>
     </header>
 
-<!-- Begin page content -->
-<main role="main" class="flex-shrink-0">
-<div class="container">
-    <h1 class="mt-5">Sticky footer with fixed navbar</h1>
-    <p class="lead">Pin a footer to the bottom of the viewport in desktop browsers with this custom HTML and CSS. A fixed navbar has been added with <code>padding-top: 60px;</code> on the <code>main &gt; .container</code>.</p>
-    <p>Back to <a href="/docs/4.5/examples/sticky-footer/">the default sticky footer</a> minus the navbar.</p>
-</div>
-</main>
+    <!-- Begin page content -->
+    <main role="main" class="flex-shrink-0">
+        <div class="container py-5">
+            {{ $slot }}
+        </div>
+    </main>
 
-<footer class="footer mt-auto py-3">
-<div class="container">
-    <span class="text-muted">Place sticky footer content here.</span>
-</div>
-</footer>
+    <footer class="footer mt-auto py-3">
+        <div class="container">
+            <span class="text-muted">Place sticky footer content here.</span>
+        </div>
+    </footer>
 
-<script src="{{ asset('js/jquery.js') }}"></script>
-<script src="{{ asset('js/bootstrap.js') }}"></script>
+    <script src="{{ asset('js/jquery.js') }}"></script>
+    <script src="{{ asset('js/bootstrap.js') }}"></script>
 
-@livewireScripts
+    @livewireScripts
 </body>
 </html>
