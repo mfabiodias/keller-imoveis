@@ -3,8 +3,8 @@
     @include('livewire.cliente.create')
     @include('livewire.cliente.update')
 
-    @if (session()->has('message'))
-        <div class="alert alert-success" style="margin-top:30px;">
+    @if(session()->has('type') && session()->has('message'))
+        <div class="alert alert-{{ session('type') }}" style="margin-top:30px;">
             {{ session('message') }}
         </div>
     @endif
@@ -15,7 +15,7 @@
                 <th>No.</th>
                 <th>Nome</th>
                 <th>Email</th>
-                <th>Ação</th>
+                <th>Ações</th>
             </tr>
         </thead>
         <tbody>

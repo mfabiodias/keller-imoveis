@@ -2,13 +2,16 @@
 
 namespace App\Http\Livewire\Cliente;
 
-use App\Models\Cliente;
+use App\Models\{
+    Cliente,
+    Endereco
+};
 use Livewire\{
     Component,
     WithPagination
 };
 
-class Clientes extends Component
+class Lists extends Component
 {
     use WithPagination;
 
@@ -19,7 +22,7 @@ class Clientes extends Component
 
     public function render()
     {
-        return view('livewire.cliente.clientes', [
+        return view('livewire.cliente.lists', [
             'collection' => Cliente::paginate(5)
         ]);
     }
@@ -34,14 +37,15 @@ class Clientes extends Component
 
     public function store()
     {
-        $validatedDate = $this->validate([
+        $validatedData = $this->validate([
             'nome'  => 'required',
             'email' => 'required|email',
         ]);
 
-        Cliente::create($validatedDate);
+        Cliente::create($validatedData);
 
-        session()->flash("message", 'Cliente cadastrado com sucesso!');
+        session()->flash("type", "success");
+        session()->flash("message", "Cliente {$validatedData['nome']} cadastrado com sucesso!");
 
         $this->resetInputFields();
     }
@@ -65,7 +69,7 @@ class Clientes extends Component
 
     public function update()
     {
-        $validatedDate = $this->validate([
+        $validatedData = $this->validate([
             'nome'  => 'required',
             'email' => 'required|email',
         ]);
@@ -80,6 +84,7 @@ class Clientes extends Component
             
             $this->updateMode = false;
             
+            session()->flash("type", "success");
             session()->flash("message", "Cliente {$this->nome} atualizado com sucesso");
             
             $this->resetInputFields();
@@ -88,10 +93,34 @@ class Clientes extends Component
 
     public function delete(Cliente $cliente)
     {
-        if($cliente->id)
+        $id   = $cliente->id;
+        $nome = $cliente->nome;
+        
+        if($id)
         {
-            Cliente::where("id", $cliente->id)->delete();
-            session()->flash("message", "Cliente {$this->nome} excluído com sucesso");
+            $enderecos = Endereco::where("cliente_id", $id)->count();
+
+            if($enderecos > 0)
+            {
+                session()->flash("type", "danger");
+                session()->flash("message", "Cliente {$nome} tem {$enderecos} endereço(s) e não pode ser excluído.");
+            }
+            else 
+            {
+                Cliente::where("id", $id)->delete();
+
+                if(Cliente::where("id", $id)->count() > 0)
+                {
+                    session()->flash("type", "danger");
+                    session()->flash("message", "Falha ao excluir o cliente {$nome}! Tente novamente e persistindo o erro contate o administrador.");
+                }
+                else 
+                {
+                    session()->flash("type", "success");
+                    session()->flash("message", "Cliente {$nome} excluído com sucesso");
+                }
+            }
+
         }
     }
 }

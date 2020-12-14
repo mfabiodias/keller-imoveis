@@ -42,7 +42,7 @@
     <main role="main" class="flex-shrink-0">
         <div class="container py-5">
             @if(route('cliente') == url()->current())
-                @livewire('cliente.clientes')
+                @livewire('cliente.lists')
             @elseif(route('imovel') == url()->current())
                 <p>/imovel</p>
             @else 
