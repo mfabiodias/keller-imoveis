@@ -25,8 +25,11 @@ class Clientes extends Component
     }
 
     private function resetInputFields(){
-        $this->nome  = '';
-        $this->email = '';
+        $this->table_id = '';
+        $this->nome     = '';
+        $this->email    = '';
+
+        $this->dispatchBrowserEvent('closeModal');
     }
 
     public function store()
@@ -41,8 +44,6 @@ class Clientes extends Component
         session()->flash("message", 'Cliente cadastrado com sucesso!');
 
         $this->resetInputFields();
-
-        $this->emit('closeModal'); // Close model to using to jquery
     }
 
     public function edit($id)
@@ -52,8 +53,8 @@ class Clientes extends Component
         $cliente = Cliente::where("id", $id)->first();
         
         $this->table_id = $id;
-        $this->nome       = $cliente->nome;
-        $this->email      = $cliente->email;
+        $this->nome     = $cliente->nome;
+        $this->email    = $cliente->email;
     }
 
     public function cancel()

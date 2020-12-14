@@ -37,10 +37,10 @@
     <script src="{{ asset('js/jquery.js') }}"></script>
     <script src="{{ asset('js/bootstrap.js') }}"></script>
     <script src="{{ asset('js/fontawesome.js') }}"></script>
-    <script src="{{ asset('js/app.js') }}"></script>
     
     @livewireScripts
-
+    
+    <script src="{{ asset('js/app.js') }}"></script>
 </body>
 
 </html>
