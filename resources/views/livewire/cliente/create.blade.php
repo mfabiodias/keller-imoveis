@@ -1,13 +1,15 @@
 
-
-<div class="row">
-    <div class="col-12">
-        <div class="text-right">
-            <button type="button" class="btn btn-primary text-right" data-toggle="modal" data-target="#createModal">
-                <i class="fas fa-user-plus text-light"></i> Novo Cliente
-            </button>
-        </div>
+<div class="row justify-content-between">
+    <div class="col-8">
+        <h1 class="h4">Listagem de Clientes</h1>
     </div>
+    <div class="col-4 text-right">
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createModal">
+            <i class="fas fa-user-plus text-light"></i> Novo Cliente
+        </button>
+    </div>
+</div>
+<div class="row">
     <div class="col-12">
         <div wire:ignore.self class="modal fade" id="createModal" tabindex="-1" role="dialog" aria-labelledby="createModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">

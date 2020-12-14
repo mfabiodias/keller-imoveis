@@ -25,11 +25,19 @@
                 <td>{{ $item->nome }}</td>
                 <td>{{ $item->email }}</td>
                 <td>
+                    <i class="far fa-address-card text-success app-cursor"
+                        title="Ficha do Cliente"
+                    ></i>
+                    <i class="fas fa-house-user text-warning app-cursor"
+                        title="Endereços do Cliente"
+                    ></i>
                     <i class="fas fa-user-edit text-primary app-cursor" 
+                        title="Editar Cliente"
                         wire:click="edit({{ $item->id }})" 
                         data-toggle="modal" data-target="#updateModal"
                     ></i>
                     <i class="fas fa-user-minus text-danger app-cursor" 
+                        title="Excluir Cliente"
                         wire:click="delete({{ $item->id }})"
                     ></i>
                 </td>
