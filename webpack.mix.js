@@ -13,5 +13,9 @@ const mix = require('laravel-mix');
 
 mix
     .sass("resources/scss/style.scss","public/css/style.css")
+    .postCss("resources/css/app.css","public/css/app.css")
+    .postCss("node_modules/@fortawesome/fontawesome-free/css/all.css","public/css/fontawesome.css")
     .scripts("node_modules/jquery/dist/jquery.js","public/js/jquery.js")
+    .scripts("resources/js/app.js","public/js/app.js")
     .scripts("node_modules/bootstrap/dist/js/bootstrap.bundle.js","public/js/bootstrap.js");
+    

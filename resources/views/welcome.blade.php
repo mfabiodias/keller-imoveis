@@ -6,13 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="Fabio Messias Dias <mfabiodias@gmail.com>">
-    <title>{{ $page }} | SysImóveis</title>
+    <title>{{ isset($page) ? $page ." |" : "" }} Keller Imóveis</title>
 
     <link rel="stylesheet" href="{{ asset('css/style.css') }}">
 
     @livewireStyles
 </head>
-<body class="d-flex flex-column h-100">
+<body class="d-flex flex-column h-100 pt-5">
     <header>
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
@@ -57,6 +57,7 @@
 
 <script src="{{ asset('js/jquery.js') }}"></script>
 <script src="{{ asset('js/bootstrap.js') }}"></script>
+<script src="{{ asset('js/fontawesome.js') }}"></script>
 
 @livewireScripts
 </body>

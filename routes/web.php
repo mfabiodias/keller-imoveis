@@ -1,14 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Livewire\Cliente\{
-    ListCliente,
-    CreateCliente
-};
 
-Route::get('/cliente', ListCliente::class)->name("cliente");
-Route::get('/cliente-novo', CreateCliente::class);
-
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::view('/', 'livewire.app')->name('home');
+Route::view('cliente', 'livewire.app')->name('cliente');
+Route::view('imovel', 'livewire.app')->name('imovel');
