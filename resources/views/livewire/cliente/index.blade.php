@@ -36,9 +36,8 @@
                         <td>
                             <i class="far fa-address-card text-success app-cursor"
                                 title="Ficha do Cliente"
-                            ></i>
-                            <i class="fas fa-house-user text-warning app-cursor"
-                                title="Endereços do Cliente"
+                                wire:click="card({{ $item->id }})" 
+                                data-toggle="modal" data-target="#cardModal"
                             ></i>
                             <i class="fas fa-user-edit text-primary app-cursor" 
                                 title="Editar Cliente"
@@ -59,28 +58,40 @@
 
     {{ $collection->links() }}
 
-    @include('components.modal', [ "modal" => [
+    @include("components.modal", [ "modal" => [
         "id"       => "createModal",
         "label"    => "createModalLabel",
         "title"    => "Cadastrar Cliente",
         "action"   => "Cadastrar",
-        "function" => 'create()',
+        "function" => "create()",
         "valign"   => false, // true || false
-        "scroll"   => false, // true || false
-        "size"     => '', // sm, lg, xl
-        "body"     => 'livewire.cliente.crud',
+        "scroll"   => true, // true || false
+        "size"     => "lg", // sm, lg, xl
+        "body"     => "livewire.cliente.crud",
     ]])
 
-    @include('components.modal', [ "modal" => [
+    @include("components.modal", [ "modal" => [
         "id"       => "updateModal",
         "label"    => "updateModalLabel",
         "title"    => "Atualizar Cliente",
         "action"   => "Atualizar",
-        "function" => 'update()',
+        "function" => "update()",
+        "valign"   => false, // true || false
+        "scroll"   => true, // true || false
+        "size"     => "lg", // sm, lg, xl
+        "body"     => "livewire.cliente.crud",
+    ]])
+
+    @include("components.modal", [ "modal" => [
+        "id"       => "cardModal",
+        "label"    => "cardModalLabel",
+        "title"    => "Detalhes do Cliente",
+        "action"   => "",
+        "function" => "",
         "valign"   => true, // true || false
         "scroll"   => false, // true || false
-        "size"     => '', // sm, lg, xl
-        "body"     => 'livewire.cliente.crud',
+        "size"     => "", // sm, lg, xl
+        "body"     => "livewire.cliente.card",
     ]])
     
 </div>

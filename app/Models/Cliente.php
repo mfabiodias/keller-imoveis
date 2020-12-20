@@ -12,7 +12,9 @@ class Cliente extends Model
     protected $table      = "cliente";
     protected $primaryKey = "id";
     protected $fillable   = [
-        'nome', 'email'
+        'nome', 'email', 'tel_residencial', 'tel_comercial', 'cel', 'cel_operadora', 
+        'nextel_id', 'nacionalidade', 'ocupacao', 'doc_tipo', 'doc_numero', 'nome_pai',
+        'nome_mae', 'investidor'
     ];
 
     public function endereco()
