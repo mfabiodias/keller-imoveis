@@ -11,7 +11,7 @@ use Livewire\{
     WithPagination
 };
 
-class Lists extends Component
+class Index extends Component
 {
     use WithPagination;
 
@@ -22,7 +22,7 @@ class Lists extends Component
 
     public function render()
     {
-        return view('livewire.cliente.lists', [
+        return view('livewire.cliente.index', [
             'collection' => Cliente::paginate(5)
         ]);
     }
@@ -35,12 +35,14 @@ class Lists extends Component
         $this->dispatchBrowserEvent('closeModal');
     }
 
-    public function store()
+    public function create()
     {
         $validatedData = $this->validate([
             'nome'  => 'required',
             'email' => 'required|email',
         ]);
+
+        $this->dataForm($validatedData);
 
         Cliente::create($validatedData);
 
@@ -76,6 +78,8 @@ class Lists extends Component
 
         if($this->table_id) 
         {
+            $this->dataForm($this);
+
             $cliente = Cliente::find($this->table_id);
             $cliente->update([
                 'nome'  => $this->nome,
@@ -121,6 +125,22 @@ class Lists extends Component
                 }
             }
 
+        }
+    }
+
+    private function dataForm(&$data)
+    {
+        $conv = gettype($data) === 'object';
+        
+        foreach($data as $key => $item)
+        {
+            if($key == 'nome') {
+                if($conv) $data->$key = ucwords($item);
+                else $data[$key] = ucwords($item);    
+            } else if($key == 'email') {
+                if($conv) $data->$key = strtolower($item);
+                else $data[$key] = strtolower($item); 
+            } 
         }
     }
 }
