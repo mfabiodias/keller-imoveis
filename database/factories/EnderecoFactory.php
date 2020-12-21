@@ -25,6 +25,7 @@ class EnderecoFactory extends Factory
 
         return [
             'cliente_id'  => rand(1,100),
+            'cep'         => rand(11111111,99999999),
             'rua'         => $this->faker->address,
             'numero'      => rand(230,9999),
             'complemento' => "",

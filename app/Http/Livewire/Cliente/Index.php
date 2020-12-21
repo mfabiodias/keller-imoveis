@@ -11,15 +11,21 @@ use Livewire\{
     WithPagination
 };
 
+use Claudsonm\CepPromise\CepPromise;
+
 class Index extends Component
 {
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
     
-    public $cliente, $endereco;
+    public $active_tab, $cliente, $endereco;
     public $cli_id, $cli_nome, $cli_email;
-    public $end_id, $end_rua, $end_numero, $end_complemento, $end_bairro, $end_cidade, $end_estado;
+    public $end_id, $end_cep, $end_rua, $end_numero, $end_complemento, $end_bairro, $end_cidade, $end_estado;
+
+    protected $listeners = [
+        'changeTab' => 'changeTab'
+    ];
 
     public function hydrate()
     {
@@ -39,6 +45,7 @@ class Index extends Component
         $validatedData = $this->validate([
             'cli_nome'   => 'required',
             'cli_email'  => 'required|email|unique:cliente,email',
+            'end_cep'    => 'required',
             'end_rua'    => 'required',
             'end_numero' => 'required',
             'end_bairro' => 'required',
@@ -68,8 +75,26 @@ class Index extends Component
         $this->dispatchBrowserEvent('closeModal');
     }
 
+    public function changeTab($active_tab) {
+        $this->active_tab = $active_tab;
+    }
+
+    public function getCep()
+    {
+        $cep = CepPromise::fetch($this->end_cep);
+        
+        if($cep->zipCode) {
+            $this->end_cep    = $cep->zipCode;
+            $this->end_rua    = $cep->street;
+            $this->end_bairro = $cep->district;
+            $this->end_cidade = $cep->city;
+            $this->end_estado = $cep->state;
+        }
+    }
+
     public function edit($id)
     {
+        
         $this->updateMode = true;
         
         $cliente  = Cliente::where("id", $id)->first();
@@ -80,6 +105,7 @@ class Index extends Component
         $this->cli_email = $cliente->email;
 
         $this->end_id          = $endereco->id;
+        $this->end_cep         = $endereco->cep;
         $this->end_rua         = $endereco->rua;
         $this->end_numero      = $endereco->numero;
         $this->end_complemento = $endereco->complemento;
@@ -97,6 +123,7 @@ class Index extends Component
         if(!!$endereco)
         {
             $this->end_id          = $endereco->id; 
+            $this->end_cep         = $endereco->cep; 
             $this->end_rua         = $endereco->rua; 
             $this->end_numero      = $endereco->numero; 
             $this->end_complemento = $endereco->complemento; 

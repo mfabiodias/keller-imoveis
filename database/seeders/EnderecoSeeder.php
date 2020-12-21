@@ -13,6 +13,6 @@ class EnderecoSeeder extends Seeder
      */
     public function run()
     {
-        \App\Models\Endereco::factory(500)->create();
+        \App\Models\Endereco::factory(20)->create();
     }
 }

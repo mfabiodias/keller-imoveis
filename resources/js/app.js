@@ -13,3 +13,8 @@ $('.modal').on('hidden.bs.modal', function (e) {
 $('.new-modal').on('show.bs.modal', function (e) {
     $(this).find('form').trigger('reset');
 });
+
+$('ul#clientTab > .nav-item > .nav-link ').on('click', function (e) {
+    let active_tab = $(this).attr('id');
+    Livewire.emit('changeTab', active_tab)
+});

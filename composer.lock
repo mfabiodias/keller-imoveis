@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fd677c574dfd1c1b0f022b7e586cc50d",
+    "content-hash": "e19f7c940a458550d55cfa870d00414b",
     "packages": [
         {
             "name": "asm89/stack-cors",
@@ -117,6 +117,63 @@
                 }
             ],
             "time": "2020-08-18T23:57:15+00:00"
+        },
+        {
+            "name": "claudsonm/cep-promise-php",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/claudsonm/cep-promise-php.git",
+                "reference": "4fd1af022195e67a86004a55b308cee9c7891a27"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/claudsonm/cep-promise-php/zipball/4fd1af022195e67a86004a55b308cee9c7891a27",
+                "reference": "4fd1af022195e67a86004a55b308cee9c7891a27",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-simplexml": "*",
+                "guzzlehttp/guzzle": "~6.0|~7.0",
+                "php": "^7.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.0",
+                "symfony/var-dumper": "^4.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Claudsonm\\CepPromise\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Claudson Martins",
+                    "email": "claudson@outlook.com",
+                    "homepage": "https://github.com/claudsonm"
+                }
+            ],
+            "description": "Busca por CEP utilizando Promises nos serviços dos Correios, ViaCEP, CepAberto e outros.",
+            "keywords": [
+                "CEP Aberto",
+                "cep",
+                "cepaberto",
+                "correios",
+                "php",
+                "promise",
+                "viacep"
+            ],
+            "support": {
+                "issues": "https://github.com/claudsonm/cep-promise-php/issues",
+                "source": "https://github.com/claudsonm/cep-promise-php/tree/v1.1.0"
+            },
+            "time": "2020-12-01T15:40:43+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",
