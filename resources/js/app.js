@@ -1,20 +1,41 @@
 // require('./bootstrap');
 
+/* #####################
+######  Livewire  ######
+##################### */
+
 window.addEventListener('closeModal', event => {
     $('.modal').modal('hide');
-})
-
-// Limpa campos de todos modals após fecha-los
-$('.modal').on('hidden.bs.modal', function (e) {
-    $(this).find('form').trigger('reset');
 });
 
-// Limpa campos para criar registros antes de iniciar o modal
-$('.new-modal').on('show.bs.modal', function (e) {
-    $(this).find('form').trigger('reset');
+window.addEventListener('closeLoader', event => {
+    $("#loader").hide();
 });
 
-$('ul#clientTab > .nav-item > .nav-link ').on('click', function (e) {
+
+/* #####################
+#######  Jquery  #######
+##################### */
+
+$('ul#clientTab > .nav-item > .nav-link').on('click', function (e) {
     let active_tab = $(this).attr('id');
     Livewire.emit('changeTab', active_tab)
 });
+
+$('#getCep').on('click', function (e) {
+    $("#loader").show();
+    setTimeout(function() { $("#loader").hide(); }, 30000);
+});
+
+$('.cep').on('keyup', function() {
+    $(this).val(numberOnly($(this).val()));
+});
+
+
+/* #####################
+#########  JS  #########
+##################### */
+
+function numberOnly(str) {
+    return str.replace(/[^0-9.]/g, "");
+}

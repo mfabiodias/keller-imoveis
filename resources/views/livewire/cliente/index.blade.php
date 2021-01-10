@@ -1,12 +1,12 @@
 <div class="pt-5">
 
     <div class="row justify-content-between">
-        <div class="col-8">
+        <div class="col-12 col-md-8">
             <h1 class="h4">Listagem de Clientes</h1>
         </div>
-        <div class="col-4 text-right">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#createModal">
-                <i class="fas fa-user-plus text-light"></i> Novo Cliente
+        <div class="col-12 col-md-4 text-right">
+            <button type="button" class="btn btn-sm btn-primary form-clean" data-toggle="modal" data-target="#createModal">
+                <i class="fas fa-user-plus text-light"></i> Cliente
             </button>
         </div>
     </div>
@@ -18,22 +18,22 @@
                 <x-alert />
             @endif
 
-            <table class="table table-bordered mt-5">
+            <table class="table table-sm table-bordered table-striped table-md-responsive mt-5">
                 <thead>
                     <tr>
                         <th>No.</th>
                         <th>Nome</th>
-                        <th>Email</th>
+                        <th class="d-none d-md-block">Email</th>
                         <th>Ações</th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach($collection as $item)
                     <tr>
-                        <td>{{ $item->id }}</td>
+                        <td class="text-center">{{ $item->id }}</td>
                         <td>{{ $item->nome }}</td>
-                        <td>{{ $item->email }}</td>
-                        <td>
+                        <td class="d-none d-md-block">{{ $item->email }}</td>
+                        <td class="text-center">
                             <i class="far fa-address-card text-success app-cursor"
                                 title="Ficha do Cliente"
                                 wire:click="card({{ $item->id }})" 
@@ -64,7 +64,7 @@
         "title"    => "Cadastrar Cliente",
         "action"   => "Cadastrar",
         "function" => "create()",
-        "valign"   => false, // true || false
+        "valign"   => true, // true || false
         "scroll"   => true, // true || false
         "size"     => "lg", // sm, lg, xl
         "body"     => "livewire.cliente.crud",
@@ -76,7 +76,7 @@
         "title"    => "Atualizar Cliente",
         "action"   => "Atualizar",
         "function" => "update()",
-        "valign"   => false, // true || false
+        "valign"   => true, // true || false
         "scroll"   => true, // true || false
         "size"     => "lg", // sm, lg, xl
         "body"     => "livewire.cliente.crud",

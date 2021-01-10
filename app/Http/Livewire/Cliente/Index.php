@@ -81,6 +81,8 @@ class Index extends Component
 
     public function getCep()
     {
+        $this->cleanAddres();
+        
         $cep = CepPromise::fetch($this->end_cep);
         
         if($cep->zipCode) {
@@ -90,6 +92,8 @@ class Index extends Component
             $this->end_cidade = $cep->city;
             $this->end_estado = $cep->state;
         }
+
+        $this->dispatchBrowserEvent('closeLoader');
     }
 
     public function edit($id)
@@ -146,6 +150,7 @@ class Index extends Component
     {
         $this->updateMode = false;
         resetAttributes($this, 'cli_');
+        resetAttributes($this, 'end_');
         $this->dispatchBrowserEvent('closeModal');
     }
 
@@ -204,6 +209,27 @@ class Index extends Component
             }
 
         }
+    }
+
+    private function cleanAddres() 
+    {
+        $this->end_rua         = ""; 
+        $this->end_numero      = ""; 
+        $this->end_complemento = "";
+        $this->end_bairro      = ""; 
+        $this->end_cidade      = ""; 
+        $this->end_estado      = "";
+    }
+
+    private function cleanForm() 
+    {
+        $this->end_rua         = ""; 
+        $this->end_rua         = ""; 
+        $this->end_numero      = ""; 
+        $this->end_complemento = "";
+        $this->end_bairro      = ""; 
+        $this->end_cidade      = ""; 
+        $this->end_estado      = "";
     }
 
     private function dataForm(&$data, $prefix)

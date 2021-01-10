@@ -69,7 +69,7 @@
 
 
 
-# # ################### ##  Default Values on Tables   # ################### ## #
+# ######################  Default Values on Tables   ###################### #
 
 # ############################# #
 ###   Table: tipo e subtipo   ###
@@ -115,3 +115,13 @@
 -- Comercial
 -- Área Industrial
 -- Para Empreendimento
+
+
+# ######################  Others  ###################### #
+
+### Comandos
+- (Compilar SASS) sass --watch scss/bootstrap.scss css/bootstrap.css
+- (Gerar Fontes) - npm run dev ()
+
+### Ref.:
+- (Loaders CSS) https://projects.lukehaas.me/css-loaders/

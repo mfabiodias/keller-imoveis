@@ -27,3 +27,8 @@ function resetAttributes(&$localThis, $prefix)
         }
     }
 }
+
+function numberOnly($n)
+{
+    return preg_replace("/[^0-9]/", "",$n);
+}

@@ -15,6 +15,7 @@
     @livewireStyles
 </head>
 <body class="d-flex flex-column h-100">
+    <div id="loader" style="display: none !important"><div id="loader-image" class="text-primary"></div></div>
     <header>
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
