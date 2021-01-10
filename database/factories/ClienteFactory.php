@@ -21,10 +21,9 @@ class ClienteFactory extends Factory
      */
     public function definition()
     {
-        $doc_type      = ["RG", "CPF", "CNPJ"];
-        $ocupacao      = ["Empresario", "CLT", "MEI", "Desempregado", "Investidor"];
         $operadora     = ["Claro","CTBC","OI","Sercomtel","Tim","Vivo","Nextel"];
-        $nacionalidade = ["Brasileira", "Japonesa", "Americana"];
+        $nacionalidade = ["Brasileira", "Estrangeira"];
+        $doc_tipo      = ["RG", "CPF", "CNPJ", "RNE", "CNH", "Passaporte", "Carteira de Trabalho", "Título Eleitor", "Certidão Nascimento"]; 
         $perfil        = ["Proprietário", "Cliente Interessado"];
         $fase          = ["Novo", "Em Atendimento" , "Com Proposta" , "Ganhou" , "Perdeu" , "Inativo"];
         $tipo          = ["Pessoa Física", "Pessoa Jurídica"];
@@ -40,8 +39,7 @@ class ClienteFactory extends Factory
             'cel_operadora'   => $operadora[rand(0,(count($operadora)-1))],
             'nextel_id'       => rand(11111111111,99999999999),
             'nacionalidade'   => $nacionalidade[rand(0,(count($nacionalidade)-1))],
-            'ocupacao'        => $ocupacao[rand(0,(count($ocupacao)-1))],
-            'doc_tipo'        => $doc_type[rand(0,(count($doc_type)-1))],
+            'doc_tipo'        => $doc_tipo[rand(0,(count($doc_tipo)-1))],
             'doc_numero'      => rand(11111111111,99999999999),
             'perfil'          => $perfil[rand(0,(count($perfil)-1))],
             'fase'            => $fase[rand(0,(count($fase)-1))],

@@ -20,12 +20,29 @@ class Index extends Component
     protected $paginationTheme = 'bootstrap';
     
     public $active_tab, $cliente, $endereco;
-    public $cli_id, $cli_nome, $cli_email;
+
+    // Usar sempre prefixo. Exe: (cli_, end_) e complementar com colunas da tabela. Exe: (prefix_coluna = cli_id)
+    public $cli_id, $cli_nome, $cli_email, $cli_tel_residencial, $cli_tel_comercial, $cli_cel, $cli_cel_operadora, 
+        $cli_nextel_id, $cli_nacionalidade, $cli_doc_tipo, $cli_doc_numero, $cli_perfil, $cli_fase, $cli_tipo, 
+        $cli_investidor, $cli_origem;
     public $end_id, $end_cep, $end_rua, $end_numero, $end_complemento, $end_bairro, $end_cidade, $end_estado;
+
+
+    public function __construct() {
+        // Default Values
+        $this->cli_nacionalidade = "Brasileira";
+        $this->cli_fase          = "Novo";
+        $this->cli_tipo          = "Pessoa Física";
+        $this->cli_investidor    = "Não";
+    }
 
     protected $listeners = [
         'changeTab' => 'changeTab'
     ];
+
+    public function changeTab($active_tab) {
+        $this->active_tab = $active_tab;
+    }
 
     public function hydrate()
     {
@@ -42,83 +59,77 @@ class Index extends Component
 
     public function create()
     {
-        $validatedData = $this->validate([
-            'cli_nome'   => 'required',
-            'cli_email'  => 'required|email|unique:cliente,email',
-            'end_cep'    => 'required',
-            'end_rua'    => 'required',
-            'end_numero' => 'required',
-            'end_bairro' => 'required',
-            'end_cidade' => 'required',
-            'end_estado' => 'required',
-        ]);
-
-        $data_cli = $this->dataForm($validatedData, 'cli_');
-        $data_end = $this->dataForm($validatedData, 'end_');
-
-        $cliente  = Cliente::create($data_cli);
-        $endereco = Endereco::find($this->end_id);
-        
-        if(!!$endereco) {
-            $endereco->update($data_end);
-        } else {
-            $data_end["cliente_id"] = $cliente->id;
-            Endereco::create($data_end);
-        }
-
-        session()->flash("type", "success");
-        session()->flash("message", "Cliente {$data_cli['nome']} cadastrado com sucesso!");
-
-        resetAttributes($this, 'cli_');
-        resetAttributes($this, 'end_');
-        
-        $this->dispatchBrowserEvent('closeModal');
-    }
-
-    public function changeTab($active_tab) {
-        $this->active_tab = $active_tab;
-    }
-
-    public function getCep()
-    {
-        $this->cleanAddres();
-        
-        $cep = CepPromise::fetch($this->end_cep);
-        
-        if($cep->zipCode) {
-            $this->end_cep    = $cep->zipCode;
-            $this->end_rua    = $cep->street;
-            $this->end_bairro = $cep->district;
-            $this->end_cidade = $cep->city;
-            $this->end_estado = $cep->state;
-        }
-
-        $this->dispatchBrowserEvent('closeLoader');
+        $this->upsert();
     }
 
     public function edit($id)
     {
-        
         $this->updateMode = true;
         
         $cliente  = Cliente::where("id", $id)->first();
         $endereco = Endereco::where("cliente_id", $id)->first();
-        
-        $this->cli_id    = $cliente->id;
-        $this->cli_nome  = $cliente->nome;
-        $this->cli_email = $cliente->email;
 
-        if($endereco) 
+        if($cliente)  { bindData($this, "cli_", $cliente); }
+        if($endereco) { bindData($this, "end_", $endereco); }
+    }
+
+    public function update()
+    {
+        $this->upsert("update");
+    }
+    
+    public function delete(Cliente $cliente)
+    {
+        $id   = $cliente->id;
+        $nome = $cliente->nome;
+        
+        if($id)
         {
-            $this->end_id          = $endereco->id;
-            $this->end_cep         = $endereco->cep;
-            $this->end_rua         = $endereco->rua;
-            $this->end_numero      = $endereco->numero;
-            $this->end_complemento = $endereco->complemento;
-            $this->end_bairro      = $endereco->bairro;
-            $this->end_cidade      = $endereco->cidade;
-            $this->end_estado      = $endereco->estado;
+            $enderecos = Endereco::where("cliente_id", $id)->count();
+
+            if($enderecos > 0)
+            {
+                session()->flash("type", "danger");
+                session()->flash("message", "Cliente {$nome} tem {$enderecos} endereço(s) e não pode ser excluído.");
+            }
+            else 
+            {
+                Cliente::where("id", $id)->delete();
+
+                if(Cliente::where("id", $id)->count() > 0)
+                {
+                    session()->flash("type", "danger");
+                    session()->flash("message", "Falha ao excluir o cliente {$nome}! Tente novamente e persistindo o erro contate o administrador.");
+                }
+                else 
+                {
+                    session()->flash("type", "success");
+                    session()->flash("message", "Cliente {$nome} excluído com sucesso");
+                }
+            }
         }
+    }
+
+    public function getCep()
+    {
+        $this->cleanAddress();
+        
+        try {
+            $cep = CepPromise::fetch($this->end_cep);
+            
+            if($cep->zipCode) {
+                $this->end_cep    = $cep->zipCode;
+                $this->end_rua    = $cep->street;
+                $this->end_bairro = $cep->district;
+                $this->end_cidade = $cep->city;
+                $this->end_estado = $cep->state;
+            }
+        } catch (\Exception $e) {
+            $this->addError('end_cep', 'CEP não encontrado!');
+            $this->cleanAddress();
+        }
+        
+        $this->dispatchBrowserEvent('closeLoader');
     }
 
     public function address($id)
@@ -154,76 +165,107 @@ class Index extends Component
         $this->dispatchBrowserEvent('closeModal');
     }
 
-    public function update()
+    private function upsert($type="")
     {
-        $validatedData = $this->validate([
-            'cli_nome'  => 'required',
-            'cli_email' => 'required|email',
-        ]);
-
-        if($this->cli_id) 
-        {
-            $data = $this->dataForm($this, 'cli_');
-
-            $cliente = Cliente::find($this->cli_id);
-            $cliente->update($data);
-            
-            $this->updateMode = false;
-            
-            session()->flash("type", "success");
-            session()->flash("message", "Cliente {$data['nome']} atualizado com sucesso");
-            
-            resetAttributes($this, 'cli_');
-            // $this->dispatchBrowserEvent('closeModal');
-        }
-    }
-
-    public function delete(Cliente $cliente)
-    {
-        $id   = $cliente->id;
-        $nome = $cliente->nome;
+        $upsertStep = true;
         
-        if($id)
-        {
-            $enderecos = Endereco::where("cliente_id", $id)->count();
+        $this->formValidate($type);
 
-            if($enderecos > 0)
+        $data_cli = $this->dataForm($this, 'cli_');
+        $data_end = $this->dataForm($this, 'end_');
+
+        if($type == "update")
+        {
+            $act = "atualizado";
+            
+            if(!$this->cli_id) 
             {
-                session()->flash("type", "danger");
-                session()->flash("message", "Cliente {$nome} tem {$enderecos} endereço(s) e não pode ser excluído.");
+                $upsertStep = false;
+                
+                session()->flash("type", "error");
+                session()->flash("message", "Cliente {$data_cli['nome']} não localizado na base de dados! Persistindo o erro contate o adminstrador!");
             }
             else 
             {
-                Cliente::where("id", $id)->delete();
-
-                if(Cliente::where("id", $id)->count() > 0)
-                {
-                    session()->flash("type", "danger");
-                    session()->flash("message", "Falha ao excluir o cliente {$nome}! Tente novamente e persistindo o erro contate o administrador.");
-                }
-                else 
-                {
-                    session()->flash("type", "success");
-                    session()->flash("message", "Cliente {$nome} excluído com sucesso");
-                }
+                $cliente = Cliente::find($this->cli_id);
+                $cliente->update($data_cli);
             }
-
+            
+            $this->updateMode = false;
         }
+        else 
+        {
+            $act = "cadastrado";
+            $cliente = Cliente::create($data_cli);
+        }
+
+        if($upsertStep)
+        {
+            // Upsert Endereço
+            $endereco = Endereco::find($this->end_id);
+            
+            if(!!$endereco) {
+                $endereco->update($data_end);
+            } else {
+                $data_end["cliente_id"] = $cliente->id;
+                Endereco::create($data_end);
+            }
+    
+            session()->flash("type", "success");
+            session()->flash("message", "Cliente {$data_cli['nome']} {$act} com sucesso!");
+        }
+
+        resetAttributes($this, 'cli_');
+        resetAttributes($this, 'end_');
+        
+        $this->dispatchBrowserEvent('closeModal');
     }
 
-    private function cleanAddres() 
+    private function formValidate($type="") 
     {
-        $this->end_rua         = ""; 
-        $this->end_numero      = ""; 
-        $this->end_complemento = "";
-        $this->end_bairro      = ""; 
-        $this->end_cidade      = ""; 
-        $this->end_estado      = "";
+        return $this->validate([
+            'cli_nome'          => 'required',
+            'cli_email'         => $type == 'update' ? 'required|email' : 'required|email|unique:cliente,email',
+            'cli_nacionalidade' => 'required',
+            'cli_doc_tipo'      => 'required',
+            'cli_doc_numero'    => 'required',
+            'cli_perfil'        => 'required',
+            'cli_fase'          => 'required',
+            'cli_tipo'          => 'required',
+            'cli_investidor'    => 'required',
+            'cli_origem'        => 'required',
+            'end_cep'           => 'required',
+            'end_rua'           => 'required',
+            'end_numero'        => 'required',
+            'end_bairro'        => 'required',
+            'end_cidade'        => 'required',
+            'end_estado'        => 'required',
+        ]);
     }
 
-    private function cleanForm() 
+    protected $messages = [
+        'cli_nome.required'          => 'Nome é obrigatório.',
+        'cli_email.required'         => 'Email é obrigatório.',
+        'cli_email.email'            => 'Email inválido.',
+        'cli_email.unique'           => 'Email já cadastrado no sistema.',
+        'cli_nacionalidade.required' => 'Nacionalidade é obrigatório.',
+        'cli_doc_tipo.required'      => 'Tipo documento é obrigatório.',
+        'cli_doc_numero.required'    => 'Número do documento é obrigatório.',
+        'cli_perfil.required'        => 'Perfil é obrigatório.',
+        'cli_fase.required'          => 'Fase é obrigatório.',
+        'cli_tipo.required'          => 'Tipo de Pessoa é obrigatório.',
+        'cli_investidor.required'    => 'Investidor é obrigatório.',
+        'cli_origem.required'        => 'Origem é obrigatório.',
+        'end_cep.required'           => 'CEP é obrigatório.',
+        'end_rua.required'           => 'Rua é obrigatório.',
+        'end_numero.required'        => 'Número é obrigatório.',
+        'end_bairro.required'        => 'Bairro é obrigatório.',
+        'end_cidade.required'        => 'Cidade é obrigatório.',
+        'end_estado.required'        => 'Estado é obrigatório.',
+    ];
+
+    private function cleanAddress() 
     {
-        $this->end_rua         = ""; 
         $this->end_rua         = ""; 
         $this->end_numero      = ""; 
         $this->end_complemento = "";

@@ -125,3 +125,6 @@
 
 ### Ref.:
 - (Loaders CSS) https://projects.lukehaas.me/css-loaders/
+
+### Subtipo ref.
+https://github.com/asantibanez/livewire-select

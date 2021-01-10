@@ -9,7 +9,7 @@
                 </div>
                 <div class="input-group-append">
                     <button class="btn btn-outline-secondary" 
-                    type="button" 
+                    id="getCep" type="button" 
                     wire:click="getCep()">Buscar</button>
                 </div>
             </div>
