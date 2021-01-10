@@ -133,7 +133,7 @@ class Index extends Component
     }
 
     public function address($id)
-    {
+    { 
         resetAttributes($this, 'end_');
 
         $endereco = Endereco::where("cliente_id", $id)->first();

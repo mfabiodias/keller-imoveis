@@ -21,6 +21,7 @@ class DatabaseSeeder extends Seeder
             
             # Temporário para testes
             ClienteSeeder::class,
+            ImovelSeeder::class,
             EnderecoSeeder::class,
         ]);
     }

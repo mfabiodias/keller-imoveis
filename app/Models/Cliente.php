@@ -21,4 +21,14 @@ class Cliente extends Model
     {
         return $this->hasOne("App\Models\Endereco");
     }
+
+    public function imovel()
+    {
+        return $this->hasMany("App\Models\Imovel");
+    }
+
+    public function permunta()
+    {
+        return $this->hasMany("App\Models\Permuta");
+    }
 }

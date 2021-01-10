@@ -19,7 +19,6 @@ class CreateImovelTable extends Migration
             $table->foreignId('tipo_id')->constrained('tipo');
             $table->foreignId('subtipo_id')->constrained('subtipo');
             $table->string('nome', 100);
-            $table->string('complemento', 100)->nullable();
             $table->tinyInteger('quarto')->default(0);
             $table->tinyInteger('suite')->default(0);
             $table->tinyInteger('banheiro')->default(0);
@@ -33,7 +32,6 @@ class CreateImovelTable extends Migration
             $table->double('area_util', 12, 2)->nullable();
             $table->enum('posicao', [ "norte/leste","norte/oeste","sul/leste","sul/oeste" ])->nullable();
             $table->longText('informacao')->nullable();
-            $table->json('caracteristica')->nullable();
             $table->enum('status', [ "Ativos" , "Inativos" ]);
             $table->timestamps();
         });

@@ -45,7 +45,7 @@
             @if(route('cliente') == url()->current())
                 @livewire('cliente.index')
             @elseif(route('imovel') == url()->current())
-                <p>/imovel</p>
+                @livewire('imovel.index')
             @else 
                 <p>/home</p>
             @endif

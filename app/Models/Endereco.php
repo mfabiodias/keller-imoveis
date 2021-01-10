@@ -19,4 +19,9 @@ class Endereco extends Model
     {
         return $this->belongsTo("App\Models\Cliente");
     }
+
+    public function imovel()
+    {
+        return $this->belongsTo("App\Models\Imovel");
+    }
 }
