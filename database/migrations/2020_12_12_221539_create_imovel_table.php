@@ -15,8 +15,9 @@ class CreateImovelTable extends Migration
     {
         Schema::create('imovel', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('subtipo_id')->constrained('subtipo');
             $table->foreignId('cliente_id')->constrained('cliente');
+            $table->foreignId('tipo_id')->constrained('tipo');
+            $table->foreignId('subtipo_id')->constrained('subtipo');
             $table->string('nome', 100);
             $table->string('complemento', 100)->nullable();
             $table->tinyInteger('quarto')->default(0);
@@ -33,7 +34,7 @@ class CreateImovelTable extends Migration
             $table->enum('posicao', [ "norte/leste","norte/oeste","sul/leste","sul/oeste" ])->nullable();
             $table->longText('informacao')->nullable();
             $table->json('caracteristica')->nullable();
-            $table->tinyInteger('investidor')->default(0)->nullable();
+            $table->enum('status', [ "Ativos" , "Inativos" ]);
             $table->timestamps();
         });
     }

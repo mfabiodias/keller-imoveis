@@ -104,14 +104,17 @@ class Index extends Component
         $this->cli_nome  = $cliente->nome;
         $this->cli_email = $cliente->email;
 
-        $this->end_id          = $endereco->id;
-        $this->end_cep         = $endereco->cep;
-        $this->end_rua         = $endereco->rua;
-        $this->end_numero      = $endereco->numero;
-        $this->end_complemento = $endereco->complemento;
-        $this->end_bairro      = $endereco->bairro;
-        $this->end_cidade      = $endereco->cidade;
-        $this->end_estado      = $endereco->estado;
+        if($endereco) 
+        {
+            $this->end_id          = $endereco->id;
+            $this->end_cep         = $endereco->cep;
+            $this->end_rua         = $endereco->rua;
+            $this->end_numero      = $endereco->numero;
+            $this->end_complemento = $endereco->complemento;
+            $this->end_bairro      = $endereco->bairro;
+            $this->end_cidade      = $endereco->cidade;
+            $this->end_estado      = $endereco->estado;
+        }
     }
 
     public function address($id)

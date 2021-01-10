@@ -20,15 +20,17 @@ class CreateClienteTable extends Migration
             $table->string('tel_residencial', 30)->nullable();
             $table->string('tel_comercial', 30)->nullable();
             $table->string('cel', 30)->nullable();
-            $table->enum('cel_operadora', [ "Claro","CTBC","OI","Sercomtel","Tim","Vivo","Nextel" ])->nullable();
+            $table->enum('cel_operadora', [ "Claro", "CTBC", "OI", "Sercomtel", "Tim", "Vivo", "Nextel" ])->nullable();
             $table->string('nextel_id', 20)->nullable();
             $table->string('nacionalidade', 20)->nullable();
             $table->string('ocupacao', 20)->nullable();
             $table->string('doc_tipo', 50)->nullable();
-            $table->string('doc_numero', 20)->nullable();
-            $table->string('nome_pai', 100)->nullable();
-            $table->string('nome_mae', 100)->nullable();
-            $table->tinyInteger('investidor')->default(0);
+            $table->string('doc_numero', 30)->nullable();
+            $table->enum('perfil', [ "Proprietário", "Cliente Interessado" ]);
+            $table->enum('fase', [ "Novo", "Em Atendimento" , "Com Proposta" , "Ganhou" , "Perdeu" , "Inativo" ]);
+            $table->enum('tipo', [ "Pessoa Física", "Pessoa Jurídica" ]);
+            $table->enum('investidor', [ "Sim" , "Não" ]);
+            $table->enum('origem', [ "Email" , "Jornal", "Pessoal", "Placa", "Revista", "Site", "Telefone", "Outros" ]);
             $table->timestamps();
         });
     }

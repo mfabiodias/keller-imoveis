@@ -13,7 +13,7 @@
     </ul>
     <div class="tab-content" id="clientTabContent">
         {{-- Dados do Cliente --}}
-        <div class="tab-pane fade {{ empty($active_tab) || $active_tab == 'cliente-tab' ? 'show active' : '' }}" id="cliente" role="tabpanel" aria-labelledby="cliente-tab">
+        <div class="tab-pane pt-3 fade {{ empty($active_tab) || $active_tab == 'cliente-tab' ? 'show active' : '' }}" id="cliente" role="tabpanel" aria-labelledby="cliente-tab">
             <div class="form-group">
                 <input type="hidden" wire:model.defer="cli_id">
                 <label for="ipt1">Nome</label>
@@ -27,7 +27,7 @@
             </div>
         </div>
         {{-- Endereço do Cliente --}}
-        <div class="tab-pane fade {{ $active_tab == 'endereco-tab' ? 'show active' : '' }}" id="endereco" role="tabpanel" aria-labelledby="endereco-tab">
+        <div class="tab-pane pt-3 fade {{ $active_tab == 'endereco-tab' ? 'show active' : '' }}" id="endereco" role="tabpanel" aria-labelledby="endereco-tab">
             @include('livewire.endereco.crud')
         </div>
     </div>

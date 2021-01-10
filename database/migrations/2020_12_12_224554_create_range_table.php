@@ -15,7 +15,9 @@ class CreateRangeTable extends Migration
     {
         Schema::create('range', function (Blueprint $table) {
             $table->id();
-            $table->string('nome', 50);
+            $table->string('nome', 100);
+            $table->double('min', 12, 2)->nullable();
+            $table->double('max', 12, 2)->nullable();
             $table->timestamps();
         });
     }

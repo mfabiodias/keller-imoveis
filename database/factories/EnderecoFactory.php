@@ -24,7 +24,8 @@ class EnderecoFactory extends Factory
         $estado = ["SP", "BA", "PR", "PE", "MG"];
 
         return [
-            'cliente_id'  => rand(1,100),
+            'cliente_id'  => rand(1,20),
+            'imovel_id'   => null,
             'cep'         => rand(11111111,99999999),
             'rua'         => $this->faker->address,
             'numero'      => rand(230,9999),
