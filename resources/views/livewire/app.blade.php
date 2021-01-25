@@ -1,4 +1,3 @@
-
 <!doctype html>
 <html lang="pt-br" class="h-100">
 <head>
@@ -25,14 +24,14 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item active">
-                        <a class="nav-link" href="{{ route('home') }}">Home <span class="sr-only">(current)</span></a>
+                    <li class="nav-item <?= my_route() ? 'active' : '' ?>">
+                        <a class="nav-link" href="{{ route('home') }}">Home <?= my_route() ? '<span class="sr-only">(current)</span>' : '' ?></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('cliente') }}">Cliente</a>
+                    <li class="nav-item <?= my_route('cliente') ? 'active' : '' ?>">
+                        <a class="nav-link" href="{{ route('cliente') }}">Cliente <?= my_route("cliente") ? '<span class="sr-only">(current)</span>' : '' ?></a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ route('imovel') }}">Imóveis</a>
+                    <li class="nav-item <?= my_route('imovel') ? 'active' : '' ?>">
+                        <a class="nav-link" href="{{ route('imovel') }}">Imóveis <?= my_route("imovel") ? '<span class="sr-only">(current)</span>' : '' ?></a>
                     </li>
                 </ul>
             </div>

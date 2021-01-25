@@ -22,6 +22,7 @@ class ImovelFactory extends Factory
     public function definition()
     {
         $posicao    = ['norte/leste', 'norte/oeste', 'sul/leste', 'sul/oeste'];
+        $chaves     = ['imobiliaria','portaria','proprietario','inquilino','construtora'];
         $status     = ['Ativos', 'Inativos'];
         $tipo_id    = rand(1,5);
         $subtipo_id = [
@@ -49,6 +50,7 @@ class ImovelFactory extends Factory
             'area_total'    => $this->faker->randomFloat(2, 80000, 2000000),
             'area_util'     => $this->faker->randomFloat(2, 80000, 2000000),
             'posicao'       => $posicao[rand(0,(count($posicao)-1))],
+            'chaves'        => $chaves[rand(0,(count($chaves)-1))],
             'status'        => $status[rand(0,(count($status)-1))],
         ];
     }

@@ -2,7 +2,7 @@
     <li class="nav-item" role="presentation">
         <a class="nav-link {{ empty($active_tab) || $active_tab == 'cliente-tab' ? 'active' : '' }}" id="cliente-tab" 
         data-toggle="tab" href="#cliente" role="tab" aria-controls="cliente" 
-        aria-selected="{{ empty($active_tab) || $active_tab == 'cliente-tab' ? 'true' : 'false' }}">Cliente</a>
+        aria-selected="{{ empty($active_tab) || $active_tab == 'cliente-tab' ? 'true' : 'false' }}">{{ $comp_name }}</a>
     </li>
     <li class="nav-item" role="presentation">
         <a class="nav-link {{ $active_tab == 'endereco-tab' ? 'active' : '' }}" id="endereco-tab" 

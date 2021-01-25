@@ -11,8 +11,6 @@ use Livewire\{
     WithPagination
 };
 
-use Claudsonm\CepPromise\CepPromise;
-
 class Index extends Component
 {
     use WithPagination;
@@ -53,13 +51,17 @@ class Index extends Component
     public function render()
     {
         return view('livewire.cliente.index', [
+            'comp_name'  => 'Cliente',
             'collection' => Cliente::paginate(5)
         ]);
     }
 
-    public function create()
-    {
+    public function create() {
         $this->upsert();
+    }
+
+    public function update() {
+        $this->upsert("update");
     }
 
     public function edit($id)
@@ -71,11 +73,6 @@ class Index extends Component
 
         if($cliente)  { bindData($this, "cli_", $cliente); }
         if($endereco) { bindData($this, "end_", $endereco); }
-    }
-
-    public function update()
-    {
-        $this->upsert("update");
     }
     
     public function delete(Cliente $cliente)
@@ -110,26 +107,8 @@ class Index extends Component
         }
     }
 
-    public function getCep()
-    {
-        $this->cleanAddress();
-        
-        try {
-            $cep = CepPromise::fetch($this->end_cep);
-            
-            if($cep->zipCode) {
-                $this->end_cep    = $cep->zipCode;
-                $this->end_rua    = $cep->street;
-                $this->end_bairro = $cep->district;
-                $this->end_cidade = $cep->city;
-                $this->end_estado = $cep->state;
-            }
-        } catch (\Exception $e) {
-            $this->addError('end_cep', 'CEP não encontrado!');
-            $this->cleanAddress();
-        }
-        
-        $this->dispatchBrowserEvent('closeLoader');
+    public function getCep() {
+        cepPromise($this);
     }
 
     public function address($id)
@@ -263,16 +242,6 @@ class Index extends Component
         'end_cidade.required'        => 'Cidade é obrigatório.',
         'end_estado.required'        => 'Estado é obrigatório.',
     ];
-
-    private function cleanAddress() 
-    {
-        $this->end_rua         = ""; 
-        $this->end_numero      = ""; 
-        $this->end_complemento = "";
-        $this->end_bairro      = ""; 
-        $this->end_cidade      = ""; 
-        $this->end_estado      = "";
-    }
 
     private function dataForm(&$data, $prefix)
     {

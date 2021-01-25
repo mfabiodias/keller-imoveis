@@ -2,11 +2,11 @@
 
     <div class="row justify-content-between">
         <div class="col-12 col-md-8">
-            <h1 class="h4">Listagem de Clientes</h1>
+            <h1 class="h4">Listagem de {{ $comp_name }}s</h1>
         </div>
         <div class="col-12 col-md-4 text-right">
             <button type="button" class="btn btn-sm btn-primary form-clean" data-toggle="modal" data-target="#createModal">
-                <i class="fas fa-user-plus text-light"></i> Cliente
+                <i class="fas fa-user-plus text-light"></i> {{ $comp_name }}
             </button>
         </div>
     </div>
@@ -30,22 +30,22 @@
                 <tbody>
                     @foreach($collection as $item)
                     <tr>
-                        <td class="text-center">{{ $item->id }}</td>
-                        <td>{{ $item->nome }}</td>
-                        <td class="d-none d-md-block">{{ $item->email }}</td>
-                        <td class="text-center">
+                        <td class="align-middle text-center">{{ $item->id }}</td>
+                        <td class="align-middle">{{ $item->nome }}</td>
+                        <td class="align-middle d-none d-md-block">{{ $item->email }}</td>
+                        <td class="align-middle text-center" style="width: 20%;">
                             <i class="far fa-address-card text-success app-cursor"
-                                title="Ficha do Cliente"
+                                title="Ficha do {{ $comp_name }}"
                                 wire:click="card({{ $item->id }})" 
                                 data-toggle="modal" data-target="#cardModal"
                             ></i>
                             <i class="fas fa-user-edit text-primary app-cursor" 
-                                title="Editar Cliente"
+                                title="Editar {{ $comp_name }}"
                                 wire:click="edit({{ $item->id }})" 
                                 data-toggle="modal" data-target="#updateModal"
                             ></i>
                             <i class="fas fa-user-minus text-danger app-cursor" 
-                                title="Excluir Cliente"
+                                title="Excluir {{ $comp_name }}"
                                 wire:click="delete({{ $item->id }})"
                             ></i>
                         </td>
