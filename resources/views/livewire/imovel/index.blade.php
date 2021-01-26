@@ -111,7 +111,7 @@
         "function" => "create()",
         "valign"   => true, // true || false
         "scroll"   => true, // true || false
-        "size"     => "lg", // sm, lg, xl
+        "size"     => "xl", // sm, lg, xl
         "body"     => "livewire.imovel.crud",
     ]])
 
@@ -123,7 +123,7 @@
         "function" => "update()",
         "valign"   => true, // true || false
         "scroll"   => true, // true || false
-        "size"     => "lg", // sm, lg, xl
+        "size"     => "xl", // sm, lg, xl
         "body"     => "livewire.imovel.crud",
     ]])
 

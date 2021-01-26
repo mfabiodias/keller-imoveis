@@ -12,6 +12,11 @@ window.addEventListener('closeLoader', event => {
     $("#loader").hide();
 });
 
+window.addEventListener('pickerRender', event => {
+    $('.selectpicker').selectpicker('render');
+});
+
+
 
 /* #####################
 #######  Jquery  #######

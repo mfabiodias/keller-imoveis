@@ -24,13 +24,27 @@ class Index extends Component
     public $active_tab, $clientes, $ranges, $subTipos, $tipos, $imovel, $endereco;
 
     // Usar sempre prefixo. Exe: (imo_, end_) e complementar com colunas da tabela. Exe: (prefix_coluna = imo_id)
-    public $imo_id, $imo_cliente_id, $imo_tipo_id, $imo_subtipo_id, $imo_nome, $imo_complemento, $imo_quarto, $imo_suite, 
-        $imo_banheiro, $imo_vagas, $imo_andar, $imo_valor_venda, $imo_valor_aluguel, $imo_condominio, $imo_iptu, 
-        $imo_area_total, $imo_area_util, $imo_posicao, $imo_informacao, $imo_caracteristica, $imo_status;
+    public $imo_id, $imo_cliente_id, $imo_tipo_id, $imo_subtipo_id, $imo_nome, $imo_quarto, $imo_suite, $imo_banheiro, 
+        $imo_vagas, $imo_andar, $imo_valor_venda, $imo_valor_aluguel, $imo_condominio, $imo_iptu, $imo_area_total, 
+        $imo_area_util, $imo_posicao, $imo_chaves, $imo_caracteristica, $imo_observacao, $imo_status;
     public $end_id, $end_cep, $end_rua, $end_numero, $end_complemento, $end_bairro, $end_cidade, $end_estado;
 
-    public function __construct() {
-        $this->clientes = Cliente::get()->toArray();
+    public function __construct() 
+    {
+        // Default Values
+        $this->imo_quarto        = 0;
+        $this->imo_suite         = 0;
+        $this->imo_banheiro      = 0;
+        $this->imo_vagas         = 0;
+        $this->imo_andar         = 0;
+        $this->imo_valor_venda   = 0;
+        $this->imo_valor_aluguel = 0;
+        $this->imo_condominio    = 0;
+        $this->imo_iptu          = 0;
+        $this->imo_area_total    = 0;
+        $this->imo_area_util     = 0;
+
+        $this->clientes = Cliente::orderBy('nome', 'asc')->get()->toArray();
         $this->ranges   = Range::get()->toArray();
         // $this->subTipos = SubTipo::get()->toArray();
         $this->subTipos = [];
@@ -57,6 +71,8 @@ class Index extends Component
                 $this->imo_subtipo_id = "";
             }
         }
+        
+        $this->dispatchBrowserEvent('pickerRender');
     }
 
     public function hydrate()

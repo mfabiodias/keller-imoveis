@@ -22,8 +22,8 @@ class ImovelFactory extends Factory
     public function definition()
     {
         $posicao    = ['norte/leste', 'norte/oeste', 'sul/leste', 'sul/oeste'];
-        $chaves     = ['imobiliaria','portaria','proprietario','inquilino','construtora'];
-        $status     = ['Ativos', 'Inativos'];
+        $chaves     = ['imobiliaria','portaria','proprietario','inquilino','construtora','posse'];
+        $status     = ['ativo', 'inativo'];
         $tipo_id    = rand(1,5);
         $subtipo_id = [
             1 => rand(1,8),

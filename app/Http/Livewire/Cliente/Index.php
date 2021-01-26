@@ -26,7 +26,8 @@ class Index extends Component
     public $end_id, $end_cep, $end_rua, $end_numero, $end_complemento, $end_bairro, $end_cidade, $end_estado;
 
 
-    public function __construct() {
+    public function __construct() 
+    {
         // Default Values
         $this->cli_nacionalidade = "Brasileira";
         $this->cli_fase          = "Novo";
