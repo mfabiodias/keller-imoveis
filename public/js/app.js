@@ -6,14 +6,16 @@
 
 window.addEventListener('closeModal', event => {
     $('.modal').modal('hide');
+    renderPicker();
 });
 
 window.addEventListener('closeLoader', event => {
     $("#loader").hide();
+    renderPicker();
 });
 
 window.addEventListener('pickerRender', event => {
-    $('.selectpicker').selectpicker('render');
+    renderPicker();
 });
 
 
@@ -40,6 +42,10 @@ $('.cep').on('keyup', function() {
 /* #####################
 #########  JS  #########
 ##################### */
+
+function renderPicker() {
+    $('.selectpicker').selectpicker('render');
+}
 
 function numberOnly(str) {
     return str.replace(/[^0-9.]/g, "");

@@ -17,6 +17,7 @@
 
             <div class="col-12 col-md-4">
                 <div class="form-group">
+                    <input type="hidden" wire:model.defer="imo_id">
                     <label for="ipt1">Cliente</label>
                     <select id="ipt1" class="selectpicker" data-live-search="true" data-width="100%" wire:model.defer="imo_cliente_id" wire:ignore >
                         <option value="" {{ !$imo_cliente_id ? 'selected' : '' }}>Selecione o Cliente</option>
@@ -35,7 +36,6 @@
 
             <div class="col-12 col-md-4">
                 <div class="form-group">
-                    <input type="hidden" wire:model.defer="imo_id">
                     <label for="ipt200">Tipo</label>
                     <select id="ipt200" class="custom-select" wire:model.defer="imo_tipo_id" wire:ignore >
                         <option value="" {{ !$imo_tipo_id ? 'selected="selected"' : '' }}>Selecione o Tipo</option>
@@ -73,7 +73,7 @@
 
             <div class="col-12 col-md-6">
                 <div class="form-group">
-                    <label for="ipt4">Nome (Torrem, Emprendimento, etc...)</label>
+                    <label for="ipt4">Nome (Torrem, Emprendimento e etc...)</label>
                     <input id="ipt4" type="text" class="form-control" maxlength="100" placeholder="Edifício Las Vegas" wire:model.defer="imo_nome">
                     @error('imo_nome') <span class="text-danger">{{ $message }}</span>@enderror
                 </div>
@@ -172,7 +172,7 @@
             </div>
             <div class="col-12 col-md-2">
                 <div class="form-group">
-                    <label for="ipt17">Localização da Chave</label>
+                    <label for="ipt17">Chaves</label>
                     <select id="ipt17" class="custom-select" wire:model.defer="imo_chaves">
                         <option value="">Selecione</option>
                         <option value="imobiliaria">Imobiliaria</option>
@@ -186,14 +186,20 @@
             </div>
             <div class="col-12 col-md-2">
                 <div class="form-group">
-                    <label for="ipt18">Status</label>
-                    <select id="ipt18" class="custom-select" wire:model.defer="imo_status">
-                        <option value="">Selecione</option>
-                        <option value="imobiliaria">Imobiliaria</option>
-                        <option value="portaria">Portaria</option>
-                        <option value="proprietario">Proprietário</option>
-                        <option value="inquilino">Inquilino</option>
-                        <option value="posse">Em posse</option>
+                    <label for="ipt18">Permuta</label>
+                    <select id="ipt18" class="custom-select" wire:model.defer="imo_permuta">
+                        <option value="sim">Sim</option>
+                        <option value="nao">Não</option>
+                    </select>
+                    @error('imo_permuta') <span class="text-danger">{{ $message }}</span>@enderror
+                </div>
+            </div>
+            <div class="col-12 col-md-2">
+                <div class="form-group">
+                    <label for="ipt19">Status</label>
+                    <select id="ipt19" class="custom-select" wire:model.defer="imo_status">
+                        <option value="ativo">Ativo</option>
+                        <option value="inativo">Inativo</option>
                     </select>
                     @error('imo_status') <span class="text-danger">{{ $message }}</span>@enderror
                 </div>
@@ -203,16 +209,28 @@
                 <div class="form-group">
                     <label for="ipt2">Caracteresticas</label>
                     <select id="ipt2" class="selectpicker" multiple data-width="100%" wire:model.defer="imo_caracteristica" wire:ignore >
-                        <optgroup label="Condiments" >
-                            <option value="1" >Mustard</option>
-                            <option value="2" >Ketchup</option>
-                            <option value="3" >Relish</option>
-                        </optgroup>
-                        <optgroup label="Breads" >
-                            <option value="4" >Plain</option>
-                            <option value="5" >Steamed</option>
-                            <option value="6" >Toasted</option>
-                        </optgroup>
+                        <?php 
+                        $newType = $oldType = ""; 
+                        
+                        foreach ($caracteristicas as $tipo => $tipo_caracteristicas) 
+                        {
+                            $newType = $tipo;
+                            
+                            if ($newType != $oldType) {
+                                echo  '<optgroup label="'.$tipo.'" >';
+                            }
+
+                            foreach ($tipo_caracteristicas as $id => $caracteristica) {
+                                echo '<option value="'.$id.'" >'.$caracteristica.'</option>';
+                            }
+
+                            if ($newType != $oldType) {
+                                echo  '</optgroup>';
+                            }
+
+                            $oldType = $tipo;
+                        }
+                        ?>
                     </select>
                     @error('imo_caracteristica') <span class="text-danger">{{ $message }}</span>@enderror
                 </div>

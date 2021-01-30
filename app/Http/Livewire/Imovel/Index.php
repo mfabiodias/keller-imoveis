@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Imovel;
 
 use App\Models\{
+    Caracteristica,
     Cliente,
     Endereco,
     Imovel,
@@ -21,7 +22,7 @@ class Index extends Component
 
     protected $paginationTheme = 'bootstrap';
     
-    public $active_tab, $clientes, $ranges, $subTipos, $tipos, $imovel, $endereco;
+    public $active_tab, $caracteristicas, $clientes, $ranges, $subTipos, $tipos, $imovel, $endereco;
 
     // Usar sempre prefixo. Exe: (imo_, end_) e complementar com colunas da tabela. Exe: (prefix_coluna = imo_id)
     public $imo_id, $imo_cliente_id, $imo_tipo_id, $imo_subtipo_id, $imo_nome, $imo_quarto, $imo_suite, $imo_banheiro, 
@@ -44,15 +45,15 @@ class Index extends Component
         $this->imo_area_total    = 0;
         $this->imo_area_util     = 0;
 
-        $this->clientes = Cliente::orderBy('nome', 'asc')->get()->toArray();
-        $this->ranges   = Range::get()->toArray();
-        // $this->subTipos = SubTipo::get()->toArray();
-        $this->subTipos = [];
-        $this->tipos    = Tipo::get()->toArray();
+        $this->caracteristicas = $this->getCaracteristicas();
+        $this->clientes        = Cliente::orderBy('nome', 'asc')->get()->toArray();
+        $this->ranges          = Range::get()->toArray();
+        $this->subTipos        = [];
+        $this->tipos           = Tipo::get()->toArray();
     }
 
     protected $listeners = [
-        'changeTab'     => 'changeTab',
+        'changeTab'  => 'changeTab',
         'changeTipo' => 'changeTipo',
     ];
 
@@ -301,6 +302,24 @@ class Index extends Component
         }
 
         return $rtn;
+    }
+
+    private function getCaracteristicas() 
+    {
+        $caracteristicas = [];
+        
+        $rtn = Caracteristica::orderBy('tipo', 'asc')->orderBy('nome', 'desc')->get()->toArray();
+
+        foreach($rtn as $r)
+        {
+            if(!array_key_exists($r['tipo'], $caracteristicas)) {
+                $caracteristicas[$r['tipo']] = [];
+            }
+
+            $caracteristicas[$r['tipo']][$r['id']] = $r['nome'];
+        }
+
+        return $caracteristicas;
     }
 }
 

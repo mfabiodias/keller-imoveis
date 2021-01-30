@@ -32,6 +32,7 @@ class CreateImovelTable extends Migration
             $table->double('area_util', 12, 2)->nullable();
             $table->enum('posicao', [ "norte/leste","norte/oeste","sul/leste","sul/oeste" ])->nullable();
             $table->enum('chaves', [ "imobiliaria","portaria","proprietario","inquilino","construtora","posse" ])->nullable();
+            $table->enum('permuta', [ "sim" , "nao" ]);
             $table->enum('status', [ "ativo" , "inativo" ]);
             $table->string('caracteristica', 100)->nullable();
             $table->longText('observacao')->nullable();

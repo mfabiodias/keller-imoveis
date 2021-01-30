@@ -16,7 +16,7 @@ class CreateCaracteristicaTable extends Migration
         Schema::create('caracteristica', function (Blueprint $table) {
             $table->id();
             $table->string('nome', 50);
-            $table->string('tipo', 50);
+            $table->string('tipo', 50)->index();
             $table->timestamps();
         });
     }
