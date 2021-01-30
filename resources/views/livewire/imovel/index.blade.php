@@ -112,6 +112,7 @@
         "valign"   => true, // true || false
         "scroll"   => true, // true || false
         "size"     => "xl", // sm, lg, xl
+        "height"   => "100%", 
         "body"     => "livewire.imovel.crud",
     ]])
 
@@ -124,6 +125,7 @@
         "valign"   => true, // true || false
         "scroll"   => true, // true || false
         "size"     => "xl", // sm, lg, xl
+        "height"   => "100%", 
         "body"     => "livewire.imovel.crud",
     ]])
 
@@ -136,6 +138,7 @@
         "valign"   => true, // true || false
         "scroll"   => false, // true || false
         "size"     => "", // sm, lg, xl
+        "height"   => "", 
         "body"     => "livewire.imovel.card",
     ]]) --}}
     

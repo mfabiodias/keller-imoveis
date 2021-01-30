@@ -5,7 +5,11 @@
         {{ !$modal["size"]   ? '' : 'modal-'.$modal["size"] }}
         " role="document"
     >
-       <div class="modal-content">
+        <div class="modal-content" 
+            style="
+                {{ !$modal["height"] ? '' : 'height: auto; min-height: '.$modal["height"].'; overflow-y: auto;' }}
+            "
+        >
             <div class="modal-header">
                 <h5 class="modal-title" id="{{ $modal["label"] }}">{{ $modal["title"] }}</h5>
                 <button type="button" wire:click.prevent="cancel()" class="close" data-dismiss="modal" aria-label="Close">

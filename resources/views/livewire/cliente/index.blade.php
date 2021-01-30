@@ -67,6 +67,7 @@
         "valign"   => true, // true || false
         "scroll"   => true, // true || false
         "size"     => "lg", // sm, lg, xl
+        "height"   => "100%", 
         "body"     => "livewire.cliente.crud",
     ]])
 
@@ -79,6 +80,7 @@
         "valign"   => true, // true || false
         "scroll"   => true, // true || false
         "size"     => "lg", // sm, lg, xl
+        "height"   => "100%", 
         "body"     => "livewire.cliente.crud",
     ]])
 
@@ -91,6 +93,7 @@
         "valign"   => true, // true || false
         "scroll"   => false, // true || false
         "size"     => "", // sm, lg, xl
+        "height"   => "", 
         "body"     => "livewire.cliente.card",
     ]])
     
