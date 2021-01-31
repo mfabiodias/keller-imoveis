@@ -1,3 +1,16 @@
+<?php
+if($errors->any()) 
+{
+    foreach ($required_inputs as $linput) 
+    {
+        if ($errors->has($linput)) 
+        {
+            list($lp, $li) = explode("_", $linput);
+            $active_tab = $type_tab[$lp];
+        }
+    }
+}
+?>
 <ul class="nav nav-tabs toggle-tab" id="clientTab" role="tablist">
     <li class="nav-item" role="presentation">
         <a class="nav-link {{ empty($active_tab) || $active_tab == 'cliente-tab' ? 'active' : '' }}" id="cliente-tab" 

@@ -16,8 +16,13 @@ class Index extends Component
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
+
+    public $type_tab = [
+        "cli" => "cliente-tab",
+        "end" => "endereco-tab",
+    ];
     
-    public $active_tab, $cliente, $endereco;
+    public $required_inputs, $active_tab, $cliente, $endereco;
 
     // Usar sempre prefixo. Exe: (cli_, end_) e complementar com colunas da tabela. Exe: (prefix_coluna = cli_id)
     public $cli_id, $cli_nome, $cli_email, $cli_tel_residencial, $cli_tel_comercial, $cli_cel, $cli_cel_operadora, 
@@ -139,7 +144,7 @@ class Index extends Component
 
     public function cancel()
     {
-        $this->active_tab = "cliente-tab";
+        $this->changeTab("cliente-tab");
         $this->updateMode = false;
         resetAttributes($this, 'cli_');
         resetAttributes($this, 'end_');
@@ -150,6 +155,7 @@ class Index extends Component
     {
         $upsertStep = true;
         
+        $this->required_inputs = getFormInputs($this->rules);
         $this->formValidate($type);
 
         $data_cli = $this->dataForm($this, 'cli_');
@@ -206,25 +212,30 @@ class Index extends Component
 
     private function formValidate($type="") 
     {
-        return $this->validate([
-            'cli_nome'          => 'required',
-            'cli_email'         => $type == 'update' ? 'required|email' : 'required|email|unique:cliente,email',
-            'cli_nacionalidade' => 'required',
-            'cli_doc_tipo'      => 'required',
-            'cli_doc_numero'    => 'required',
-            'cli_perfil'        => 'required',
-            'cli_fase'          => 'required',
-            'cli_tipo'          => 'required',
-            'cli_investidor'    => 'required',
-            'cli_origem'        => 'required',
-            'end_cep'           => 'required',
-            'end_rua'           => 'required',
-            'end_numero'        => 'required',
-            'end_bairro'        => 'required',
-            'end_cidade'        => 'required',
-            'end_estado'        => 'required',
-        ]);
+        if($type == 'update') {
+            $this->rules['cli_email'] = 'required|email';
+        }  
+        return $this->validate();
     }
+
+    protected $rules = [
+        'cli_nome'          => 'required',
+        'cli_email'         => 'required|email|unique:cliente,email',
+        'cli_nacionalidade' => 'required',
+        'cli_doc_tipo'      => 'required',
+        'cli_doc_numero'    => 'required',
+        'cli_perfil'        => 'required',
+        'cli_fase'          => 'required',
+        'cli_tipo'          => 'required',
+        'cli_investidor'    => 'required',
+        'cli_origem'        => 'required',
+        'end_cep'           => 'required',
+        'end_rua'           => 'required',
+        'end_numero'        => 'required',
+        'end_bairro'        => 'required',
+        'end_cidade'        => 'required',
+        'end_estado'        => 'required',
+    ];
 
     protected $messages = [
         'cli_nome.required'          => 'Nome é obrigatório.',

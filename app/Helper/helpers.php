@@ -75,15 +75,6 @@ function bindData(&$lthis, $prefix, $data)
     }
 }
 
-function inputError($attr)
-{
-    $validator = \Validator::make(request()->all(), [
-        $attr => 'required'
-    ]);
-    
-    return $validator->validate();
-}
-
 function number_only($n)
 {
     return preg_replace("/[^0-9]/", "",$n);
@@ -94,4 +85,15 @@ function my_route($page="")
     $uri = trim($_SERVER["REQUEST_URI"], "/");
 
     return $uri == $page;
+}
+
+function getFormInputs($rules)
+{
+    $attr = [];
+    foreach($rules as $key => $rule)
+    {
+        array_push($attr, $key);
+    }
+
+    return $attr;
 }

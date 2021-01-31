@@ -22,8 +22,14 @@ class Index extends Component
     use WithPagination;
 
     protected $paginationTheme = 'bootstrap';
+
+    public $type_tab = [
+        "imo" => "imovel-tab",
+        "end" => "endereco-tab",
+        "per" => "permuta-tab",
+    ];
     
-    public $active_tab, $caracteristicas, $clientes, $ranges, $subTipos, $tipos, $tipoSubTipos, $imovel, $endereco, $permutas;
+    public $required_inputs, $active_tab, $caracteristicas, $clientes, $ranges, $subTipos, $tipos, $tipoSubTipos, $imovel, $endereco, $permutas;
 
     // Usar sempre prefixo. Exe: (imo_, end_) e complementar com colunas da tabela. Exe: (prefix_coluna = imo_id)
     public $imo_id, $imo_cliente_id, $imo_tipo_id, $imo_subtipo_id, $imo_nome, $imo_quarto, $imo_suite, $imo_banheiro, 
@@ -98,7 +104,7 @@ class Index extends Component
         $this->updateMode = true;
 
         $this->permutas = Permuta::with('tipo', 'subtipo', 'range')->get()->toArray();
-        
+
         $imovel   = Imovel::where("id", $id)->first();
         $endereco = Endereco::where("cliente_id", $id)->first();
 
@@ -148,9 +154,10 @@ class Index extends Component
 
     public function addPermuta() 
     {
-        if(!$this->per_id) { inputError('per_id'); }
-        else if(!$this->ran_id) { inputError('ran_id'); }
-        else {
+        if(!$this->per_id) { $this->addError('per_id', 'Campo Obrigatório'); }
+        if(!$this->ran_id) { $this->addError('ran_id', 'Campo Obrigatório'); }
+        
+        if(!!$this->per_id && !!$this->ran_id) {
             
             foreach($this->per_id as $per_id)
             {
@@ -215,7 +222,7 @@ class Index extends Component
     {
         $this->permutas = [];
         $this->subTipos = [];
-        $this->active_tab = "imovel-tab";
+        $this->changeTab("imovel-tab");
         $this->updateMode = false;
         resetAttributes($this, 'imo_');
         resetAttributes($this, 'end_');
@@ -228,6 +235,7 @@ class Index extends Component
     {
         $upsertStep = true;
         
+        $this->required_inputs = getFormInputs($this->rules);
         $this->formValidate($type);
 
         $data_cli = $this->dataForm($this, 'imo_');
@@ -302,24 +310,26 @@ class Index extends Component
 
     private function formValidate($type="") 
     {
-        return $this->validate([
-            'imo_cliente_id' => 'required',
-            'imo_tipo_id'    => 'required',
-            'imo_subtipo_id' => 'required',
-            'imo_nome'       => 'required',
-            'imo_posicao'    => 'required',
-            'imo_chaves'     => 'required',
-            'imo_permuta'    => 'required',
-            'imo_status'     => 'required',
-            'end_cep'        => 'required',
-            'end_rua'        => 'required',
-            'end_numero'     => 'required',
-            'end_bairro'     => 'required',
-            'end_cidade'     => 'required',
-            'end_estado'     => 'required',
-        ]);
+        return $this->validate();
     }
 
+    protected $rules = [
+        'imo_cliente_id' => 'required',
+        'imo_tipo_id'    => 'required',
+        'imo_subtipo_id' => 'required',
+        'imo_nome'       => 'required',
+        'imo_posicao'    => 'required',
+        'imo_chaves'     => 'required',
+        'imo_permuta'    => 'required',
+        'imo_status'     => 'required',
+        'end_cep'        => 'required',
+        'end_rua'        => 'required',
+        'end_numero'     => 'required',
+        'end_bairro'     => 'required',
+        'end_cidade'     => 'required',
+        'end_estado'     => 'required',
+    ];
+    
     protected $messages = [
         'imo_cliente_id.required' => 'Cliente é obrigatório.',
         'imo_tipo_id.required'    => 'Tipo é obrigatório.',
