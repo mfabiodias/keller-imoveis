@@ -342,32 +342,40 @@ if($errors->any())
                     </thead>
                     <tbody class="small" >
                     <?php
-                    foreach ($permutas as $permuta) 
+                    foreach ($list_permutas as $range_id => $permuta) 
                     {
                         echo 
                             '<tr>
-                                <td class="align-middle">
-                                    <strong>'.$permuta['tipo']['nome'].':</strong>
-                                    <ul>
-                                        <li>Flat</li>
-                                        <li>Duplex</li>
-                                    </ul>
-                                    <strong>Casa:</strong>
-                                    <ul>
-                                        <li>Terrea</li>
-                                        <li>Sobrado</li>
-                                    </ul>
-                                </td>
-                                <td class="align-middle">
-                                    De R$ 100.000,00 <br />
-                                    a R$ 200.000,00 
-                                </td>
-                                <td class="align-middle text-center" style="width: 100px !important">
-                                    <button type="button" class="btn btn-sm btn-success w-100 my-2" >ON/OFF</button>
-                                    <button type="button" class="btn btn-sm btn-outline-danger w-100 my-2" ><i class="fas fa-minus-circle"></i></button>
-                                </td>
-                            </tr>'
-                        ;
+                                <td class="align-middle">';
+                        
+                        foreach ($permuta['tipo'] as $tipo) 
+                        {
+                            echo 
+                                '<strong>'.$tipo['nome'].':</strong>
+                                    <ul>';
+                            
+                            foreach ($tipo['subtipo'] as $subtipo) 
+                            {
+                                echo '<li>'.$subtipo.'</li>';
+                            }
+
+                            echo
+                                    '</ul>';
+                        }
+
+                        echo 
+                            '</td>
+                            <td class="align-middle">
+                                De R$ '.number_format($permuta['min'], 2, ',', '.').' <br />
+                                a R$ '.number_format($permuta['max'], 2, ',', '.').'
+                            </td>
+                            <td class="align-middle text-center" style="width: 100px !important">
+                                <button type="button" class="btn btn-sm btn-'.($permuta['status'] == 'ativo' ? 'success' : 'danger').' w-100 my-2" wire:click="statusPermuta('.$range_id.')" >ON/OFF</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger w-100 my-2" wire:click="delPermuta('.$range_id.')" >
+                                    <i class="fas fa-minus-circle"></i>
+                                </button>
+                            </td>
+                        </tr>';
                     }
                     ?>
                     </tbody>

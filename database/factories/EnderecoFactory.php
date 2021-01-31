@@ -22,7 +22,7 @@ class EnderecoFactory extends Factory
     public function definition()
     {
         $estado = ["SP", "BA", "PR", "PE", "MG"];
-        $imovel_id = [null, rand(1,30)];
+        $imovel_id = [null, rand(1,20)];
 
         return [
             'cliente_id'  => rand(1,20),

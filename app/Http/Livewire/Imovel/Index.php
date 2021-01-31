@@ -29,7 +29,8 @@ class Index extends Component
         "per" => "permuta-tab",
     ];
     
-    public $required_inputs, $active_tab, $caracteristicas, $clientes, $ranges, $subTipos, $tipos, $tipoSubTipos, $imovel, $endereco, $permutas;
+    public $required_inputs, $active_tab, $caracteristicas, $clientes, $ranges, $subTipos, $tipos, $tipoSubTipos, 
+        $imovel, $endereco, $permutas, $list_permutas;
 
     // Usar sempre prefixo. Exe: (imo_, end_) e complementar com colunas da tabela. Exe: (prefix_coluna = imo_id)
     public $imo_id, $imo_cliente_id, $imo_tipo_id, $imo_subtipo_id, $imo_nome, $imo_quarto, $imo_suite, $imo_banheiro, 
@@ -60,6 +61,7 @@ class Index extends Component
         $this->caracteristicas = $this->getCaracteristicas();
         $this->clientes        = Cliente::orderBy('nome', 'asc')->get()->toArray();
         $this->permutas        = [];
+        $this->list_permutas   = [];
         $this->ranges          = Range::get()->toArray();
         $this->subTipos        = [];
         $this->tipos           = Tipo::get()->toArray();
@@ -99,14 +101,90 @@ class Index extends Component
         $this->upsert("update");
     }
 
+    public function statusPermuta($range_id) 
+    {
+        foreach($this->permutas as $key => $permuta)
+        {
+            if($this->permutas[$key]["range_id"] == $range_id) {
+                $this->permutas[$key]["status"] = $this->permutas[$key]["status"] == 'ativo' ? 'inativo' : 'ativo'; 
+            }
+        }
+
+        $this->listPermutas();
+    }
+
+    public function delPermuta($range_id) 
+    {
+        foreach($this->permutas as $key => $permuta)
+        {
+            if($this->permutas[$key]["range_id"] == $range_id) {
+                unset($this->permutas[$key]); 
+            }
+        }
+
+        $this->listPermutas();
+    }
+
+    private function listPermutas() 
+    {
+        $this->list_permutas = [];
+
+        foreach($this->permutas as $permuta)
+        {
+            if(!array_key_exists($permuta['range_id'], $this->list_permutas)) {
+                $this->list_permutas[$permuta['range_id']] = [ "min" => 0, "max" => 0, "status" => "", "tipo" => [] ];
+                $this->list_permutas[$permuta['range_id']]['tipo'][$permuta['tipo_id']] = ["nome" => "", "subtipo" => []];
+            }
+
+            $this->list_permutas[$permuta['range_id']]['status'] = $permuta['status'];
+
+            foreach($this->tipoSubTipos as $tipoSubTipo)
+            {
+                if($permuta['tipo_id'] == $tipoSubTipo['id']) {
+                    $this->list_permutas[$permuta['range_id']]['tipo'][$permuta['tipo_id']]['nome'] = $tipoSubTipo['nome'];
+                }
+                
+                foreach($tipoSubTipo['subtipo'] as $subTipo)
+                {
+                    if($permuta['subtipo_id'] == $subTipo['id']) {
+                        $this->list_permutas[$permuta['range_id']]['tipo'][$permuta['tipo_id']]['subtipo'][$subTipo['id']] = $subTipo['nome'];
+                    }
+                }
+            }
+        }
+
+        foreach($this->ranges as $range)
+        {
+            if(isset($this->list_permutas[$range['id']])) 
+            {
+                $this->list_permutas[$range['id']]['min'] = $range['min'];
+                $this->list_permutas[$range['id']]['max'] = $range['max'];
+            }
+        }
+        
+        // Modelo de estrutura
+        $list_permutas['range_id'] = [
+            "min" => 0,
+            "max" => 0,
+            "status" => 'ativo',
+            "tipo" => [
+                1 => [ "nome" => "apartamento", "subtipo" => [ 10 => "terraco", 22 => "flat" ] ],
+                2 => [ "nome" => "casa",        "subtipo" => [ 20 => "terraco", 12 => "flat" ] ],
+            ]
+        ];
+
+        // dd([$this->ranges, $this->tipoSubTipos, $this->permutas, $this->list_permutas, $list_permutas]);
+    }
+
     public function edit($id)
     {
         $this->updateMode = true;
 
-        $this->permutas = Permuta::with('tipo', 'subtipo', 'range')->get()->toArray();
+        $this->permutas = Permuta::where("imovel_id", $id)->get()->toArray();
+        $this->listPermutas();
 
         $imovel   = Imovel::where("id", $id)->first();
-        $endereco = Endereco::where("cliente_id", $id)->first();
+        $endereco = Endereco::where("imovel_id", $id)->first();
 
         if(!is_null($imovel)) { 
             bindData($this, "cli_", $imovel->toArray()); 
@@ -156,7 +234,7 @@ class Index extends Component
     {
         if(!$this->per_id) { $this->addError('per_id', 'Campo Obrigatório'); }
         if(!$this->ran_id) { $this->addError('ran_id', 'Campo Obrigatório'); }
-        
+
         if(!!$this->per_id && !!$this->ran_id) {
             
             foreach($this->per_id as $per_id)
@@ -165,9 +243,14 @@ class Index extends Component
 
                 $addPermuta = true;
 
-                foreach($this->permutas as $permuta)
+                # Atualiza range de tipo e subtipo existente
+                foreach($this->permutas as $key => $permuta)
                 {
-                    if($permuta["tipo_id"] == $tipo_id && $permuta["subtipo_id"] == $sub_tipo_id && $permuta["range_id"] == $this->ran_id) {
+                    if($permuta["tipo_id"] == $tipo_id && $permuta["subtipo_id"] == $sub_tipo_id) {
+                        if($permuta["range_id"] != $this->ran_id) { 
+                            $this->permutas[$key]["range_id"] = (int) $this->ran_id;
+                        }
+                        
                         $addPermuta = false;
                     }
                 }
@@ -178,11 +261,14 @@ class Index extends Component
                     array_push($this->permutas, [
                         "tipo_id"    => $tipo_id,
                         "subtipo_id" => $sub_tipo_id,
-                        "range_id"   => $this->ran_id
+                        "range_id"   => $this->ran_id,
+                        "status"     => "ativo"
                     ]);
                 }
             }
         }
+
+        $this->listPermutas();
     }
 
     private function mountPermuta($imovel_id) 
@@ -190,6 +276,7 @@ class Index extends Component
         foreach($this->permutas as $key => $permuta)
         {
             $this->permutas[$key]['imovel_id'] = $imovel_id;
+            $this->permutas[$key]['status']    = $permuta['status'];
         }
     }
 
@@ -238,8 +325,8 @@ class Index extends Component
         $this->required_inputs = getFormInputs($this->rules);
         $this->formValidate($type);
 
-        $data_cli = $this->dataForm($this, 'imo_');
-        $data_imo = $this->dataForm($this, 'end_');
+        $data_imo = $this->dataForm($this, 'imo_');
+        $data_end = $this->dataForm($this, 'end_');
 
         if($type == "update")
         {
@@ -250,12 +337,12 @@ class Index extends Component
                 $upsertStep = false;
                 
                 session()->flash("type", "error");
-                session()->flash("message", "Imovel {$data_cli['nome']} não localizado na base de dados! Persistindo o erro contate o adminstrador!");
+                session()->flash("message", "Imovel {$data_imo['nome']} não localizado na base de dados! Persistindo o erro contate o adminstrador!");
             }
             else 
             {
                 $imovel = Imovel::find($this->imo_id);
-                $imovel->update($data_cli);
+                $imovel->update($data_imo);
             }
             
             $this->updateMode = false;
@@ -263,7 +350,7 @@ class Index extends Component
         else 
         {
             $act = "cadastrado";
-            $imovel = Imovel::create($data_cli);
+            $imovel = Imovel::create($data_imo);
         }
 
         if($upsertStep)
@@ -273,10 +360,10 @@ class Index extends Component
             $endereco    = Endereco::find($endereco_id);
 
             if(!!$endereco) {
-                $endereco->update($data_imo);
+                $endereco->update($data_end);
             } else {
-                $data_imo["imovel_id"] = $imovel->id;
-                Endereco::create($data_imo);
+                $data_end["imovel_id"] = $imovel->id;
+                Endereco::create($data_end);
             }
 
             // Upsert Permuta
@@ -300,7 +387,7 @@ class Index extends Component
         }
         
         session()->flash("type", "success");
-        session()->flash("message", "Imovel {$data_cli['nome']} {$act} com sucesso!");
+        session()->flash("message", "Imovel {$data_imo['nome']} {$act} com sucesso!");
 
         resetAttributes($this, 'imo_');
         resetAttributes($this, 'end_');
