@@ -12,7 +12,7 @@ class Endereco extends Model
     protected $table      = "endereco";
     protected $primaryKey = "id";
     protected $fillable   = [
-        'cliente_id', 'endereco_id', 'cep', 'rua', 'numero', 'complemento', 'bairro', 'cidade', 'estado'
+        'cliente_id', 'imovel_id', 'cep', 'rua', 'numero', 'complemento', 'bairro', 'cidade', 'estado'
     ];
 
     public function cliente()
