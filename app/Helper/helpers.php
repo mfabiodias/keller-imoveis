@@ -84,6 +84,15 @@ function bindData(&$_this, $prefix, $data)
     }
 }
 
+function inputError($attr)
+{
+    $validator = \Validator::make(request()->all(), [
+        $attr => 'required'
+    ]);
+    
+    return $validator->validate();
+}
+
 function number_only($n)
 {
     return preg_replace("/[^0-9]/", "",$n);

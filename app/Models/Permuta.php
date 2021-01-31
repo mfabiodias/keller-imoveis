@@ -11,11 +11,11 @@ class Permuta extends Model
 
     protected $table      = "permuta";
     protected $primaryKey = "id";
-    protected $fillable   = ['cliente_id', 'tipo_id', 'subtipo_id', 'range_id', 'status'];
+    protected $fillable   = ['imovel_id', 'tipo_id', 'subtipo_id', 'range_id', 'status'];
 
-    public function cliente()
+    public function imovel()
     {
-        return $this->belongsTo("App\Models\Cliente");
+        return $this->belongsTo("App\Models\Imovel");
     }
 
     public function range()

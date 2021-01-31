@@ -182,7 +182,8 @@ class Index extends Component
         if($upsertStep)
         {
             // Upsert Endereço
-            $endereco = Endereco::find($this->end_id);
+            $endereco_id = !!$this->end_id ? $this->end_id : "";
+            $endereco    = Endereco::find($endereco_id);
             
             if(!!$endereco) {
                 $endereco->update($data_end);
@@ -191,9 +192,10 @@ class Index extends Component
                 Endereco::create($data_end);
             }
     
-            session()->flash("type", "success");
-            session()->flash("message", "Cliente {$data_cli['nome']} {$act} com sucesso!");
         }
+        
+        session()->flash("type", "success");
+        session()->flash("message", "Cliente {$data_cli['nome']} {$act} com sucesso!");
 
         resetAttributes($this, 'cli_');
         resetAttributes($this, 'end_');
@@ -249,23 +251,30 @@ class Index extends Component
         # Formatar dados
         $conv = gettype($data) === 'object';
         
+        # Normaliza dados
         foreach($data as $key => $item)
         {
             if($key == 'cli_nome') {
                 if($conv) $data->$key = ucwords($item);
                 else $data[$key] = ucwords($item);    
-            } else if($key == 'cli_email') {
+            }
+            
+            if($key == 'cli_email') {
                 if($conv) $data->$key = strtolower($item);
                 else $data[$key] = strtolower($item); 
             } 
         }
 
-        # Renomer coluna de dados
+        # Separa dados da tabela com base no prefix
         $rtn = array();
 
-        foreach($data as $key => $item) {
-            $key = str_replace($prefix, "", $key);
-            $rtn[$key] = $item;
+        foreach($data as $key => $item) 
+        {
+            if(strpos($key, $prefix) !== false)
+            {
+                $key = str_replace($prefix, "", $key);
+                $rtn[$key] = $item;
+            }
         }
 
         return $rtn;

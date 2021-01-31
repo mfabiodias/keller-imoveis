@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs" id="imovelTab" role="tablist">
+<ul class="nav nav-tabs toggle-tab" id="imovelTab" role="tablist">
     <li class="nav-item" role="presentation">
         <a class="nav-link {{ empty($active_tab) || $active_tab == 'imovel-tab' ? 'active' : '' }}" id="imovel-tab" 
         data-toggle="tab" href="#imovel" role="tab" aria-controls="imovel" 
@@ -15,46 +15,51 @@
         aria-selected="{{ $active_tab == 'permuta-tab' ? 'true' : 'false' }}">Permuta</a>
     </li>
 </ul>
-<div class="tab-content" id="imovelTabContent">
+<div class="tab-content" id="imovelTabContent" >
+    
     {{-- Dados do Imóvel --}}
     <div class="tab-pane pt-3 fade {{ empty($active_tab) || $active_tab == 'imovel-tab' ? 'show active' : '' }}" id="imovel" role="tabpanel" aria-labelledby="imovel-tab">
         <div class="form-row">
 
             <div class="col-12 col-md-4">
-                <div class="form-group">
-                    <input type="hidden" wire:model.defer="imo_id">
-                    <label for="ipt1">Cliente</label>
-                    <select id="ipt1" class="selectpicker" data-live-search="true" data-width="100%" wire:model.defer="imo_cliente_id" wire:ignore >
-                        <option value="" {{ !$imo_cliente_id ? 'selected' : '' }}>Selecione o Cliente</option>
-                        @foreach ($clientes as $cliente)
-                            <option 
-                                value="{{ $cliente["id"] }}" 
-                                {{ $imo_cliente_id == $cliente["id"] ? 'selected' : '' }}
-                            >
-                                {{ $cliente["nome"] }}
-                            </option>
-                        @endforeach
-                    </select>
+                <div class="form-group" >
+                    <div wire:ignore>
+                        <input type="hidden" wire:model.defer="imo_id">
+                        <label for="ipt1">Cliente</label>
+                        <select id="ipt1" class="selectpicker" data-live-search="true" data-width="100%" wire:model.defer="imo_cliente_id" >
+                            <option value="" {{ !$imo_cliente_id ? 'selected' : '' }}>Selecione o Cliente</option>
+                            @foreach ($clientes as $cliente)
+                                <option 
+                                    value="{{ $cliente["id"] }}" 
+                                    {{ $imo_cliente_id == $cliente["id"] ? 'selected' : '' }}
+                                >
+                                    {{ $cliente["nome"] }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     @error('imo_cliente_id') <span class="text-danger">{{ $message }}</span>@enderror
                 </div>
             </div>
 
             <div class="col-12 col-md-4">
-                <div class="form-group">
-                    <label for="ipt200">Tipo</label>
-                    <select id="ipt200" class="custom-select" wire:model.defer="imo_tipo_id" wire:ignore >
-                        <option value="" {{ !$imo_tipo_id ? 'selected="selected"' : '' }}>Selecione o Tipo</option>
-                        @foreach ($tipos as $tipo)
-                            {{-- <option value="{{ $tipo["id"] }}" {{ $imo_tipo_id == $tipo["id"] ? 'selected' : '' }}>{{ $tipo["nome"] }}</option> --}}
-                            <option 
-                                value="{{ $tipo["id"] }}" 
-                                wire:click="changeTipo({{$tipo["id"]}})" 
-                                {{ $imo_tipo_id == $tipo["id"] ? 'selected="selected"' : '' }}
-                            >
-                                {{ $tipo["nome"] }}
-                            </option>
-                        @endforeach
-                    </select>
+                <div class="form-group" >
+                    <div wire:ignore>
+                        <label for="ipt2">Tipo</label>
+                        <select id="ipt2" class="custom-select" wire:model.defer="imo_tipo_id" >
+                            <option value="" {{ !$imo_tipo_id ? 'selected="selected"' : '' }}>Selecione o Tipo</option>
+                            @foreach ($tipos as $tipo)
+                                {{-- <option value="{{ $tipo["id"] }}" {{ $imo_tipo_id == $tipo["id"] ? 'selected' : '' }}>{{ $tipo["nome"] }}</option> --}}
+                                <option 
+                                    value="{{ $tipo["id"] }}" 
+                                    wire:click="changeTipo({{$tipo["id"]}})" 
+                                    {{ $imo_tipo_id == $tipo["id"] ? 'selected="selected"' : '' }}
+                                >
+                                    {{ $tipo["nome"] }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
                     @error('imo_tipo_id') <span class="text-danger">{{ $message }}</span>@enderror
                 </div>
             </div>
@@ -212,31 +217,23 @@
 
             <div class="col-12 col-md-12">
                 <div class="form-group">
-                    <label for="ipt2">Caracteresticas</label>
-                    <select id="ipt2" class="selectpicker" multiple data-width="100%" wire:model.defer="imo_caracteristica" wire:ignore >
-                        <?php 
-                        $newType = $oldType = ""; 
-                        
-                        foreach ($caracteristicas as $tipo => $tipo_caracteristicas) 
-                        {
-                            $newType = $tipo;
-                            
-                            if ($newType != $oldType) {
+                    <div wire:ignore>
+                        <label for="ipt20">Caracteresticas</label>
+                        <select id="ipt20" class="selectpicker" multiple data-width="100%" wire:model.defer="imo_caracteristica" >
+                            <?php 
+                            foreach($caracteristicas as $tipo => $tipo_caracteristicas) 
+                            {
                                 echo  '<optgroup label="'.$tipo.'" >';
-                            }
-
-                            foreach ($tipo_caracteristicas as $id => $caracteristica) {
-                                echo '<option value="'.$id.'" >'.$caracteristica.'</option>';
-                            }
-
-                            if ($newType != $oldType) {
+    
+                                foreach($tipo_caracteristicas as $id => $caracteristica) {
+                                    echo '<option value="'.$id.'" >'.$caracteristica.'</option>';
+                                }
+    
                                 echo  '</optgroup>';
                             }
-
-                            $oldType = $tipo;
-                        }
-                        ?>
-                    </select>
+                            ?>
+                        </select>
+                    </div>
                     @error('imo_caracteristica') <span class="text-danger">{{ $message }}</span>@enderror
                 </div>
             </div>
@@ -244,119 +241,144 @@
 
             <div class="col-12 col-md-12">
                 <div class="form-group">
-                    <label for="ipt20">Observações</label>
-                    <textarea id="ipt20" rows="4" class="form-control" wire:model.defer="imo_observacao"></textarea>
+                    <label for="ipt21">Observações</label>
+                    <textarea id="ipt21" rows="4" class="form-control" wire:model.defer="imo_observacao"></textarea>
                     @error('imo_observacao') <span class="text-danger">{{ $message }}</span>@enderror
                 </div>
             </div>
 
         </div>
     </div>
+
     {{-- Endereço do Imóvel --}}
     <div class="tab-pane pt-3 fade {{ $active_tab == 'endereco-tab' ? 'show active' : '' }}" id="endereco" role="tabpanel" aria-labelledby="endereco-tab">
         @include('livewire.endereco.crud')
     </div>
+
     {{-- Permuta do Imóvel --}}
     <div class="tab-pane pt-3 fade {{ $active_tab == 'permuta-tab' ? 'show active' : '' }}" id="permuta" role="tabpanel" aria-labelledby="permuta-tab">
+
+        <div class="form-row">
+
+            <div class="col-10">
+                
+                <div class="form-row">
         
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-primary btn-lg btn-block">Block level button</button>
-        <button type="button" class="btn btn-secondary btn-lg btn-block">Block level button</button>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <div wire:ignore >
+                                <label for="ipt22">Tipo Imóvel</label>
+                                <select id="ipt22" class="selectpicker" multiple data-width="100%" wire:model.defer="per_id" >
+                                    <?php 
+                                    foreach($tipoSubTipos as $tipo) 
+                                    {
+                                        echo  '<optgroup label="'.$tipo["nome"].'" >';
+            
+                                        foreach ($tipo["subtipo"] as $subtipo) {
+                                            echo '<option value="'.$subtipo["tipo_id"].'-'.$subtipo["id"].'" >'.$subtipo["nome"].'</option>';
+                                        }
+            
+                                        echo  '</optgroup>';
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+                            @error('per_id') <span class="text-danger">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6">
+                        <div class="form-group">
+                            <label for="ipt23">Range de Valor</label>
+                            <select id="ipt23" class="custom-select" wire:model.defer="ran_id">
+                                <option value="">Selecione</option>
+                                <?php 
+                                foreach($ranges as $range) 
+                                {
+                                    echo  '<option value="'.$range['id'].'">'.$range['nome'].'</option>';
+                                }
+                                ?>
+                            </select>
+                            @error('ran_id') <span class="text-danger">{{ $message }}</span>@enderror
+                        </div>
+                    </div>
+        
+                </div>
+
+            </div>
+            <div class="col-2 my-align-buttom" >
+                <div class="form-group text-right">
+                    <label for="ipt24" class="w-100">&nbsp;&nbsp;&nbsp;&nbsp;</label>
+                    <button id="ipt24" type="button" 
+                        class="btn btn-outline-success" 
+                        wire:click="addPermuta()" 
+                    ><i class="fas fa-plus-circle"></i> Adicionar</button>
+                </div>
+            </div>
+            
+            <div class="col-12 mt-3" >
+
+                <hr class="my-3" />
+
+                <table class="table table-sm table-striped table-borderless">
+                    <thead>
+                        <tr>
+                            <th>Tipo Imóveis</th>
+                            <th>Range Valor</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="small" >
+                        <tr>
+                            <td class="align-middle">
+                                <strong>Apartamento:</strong>
+                                <ul>
+                                    <li>Flat</li>
+                                    <li>Duplex</li>
+                                </ul>
+                                <strong>Casa:</strong>
+                                <ul>
+                                    <li>Terrea</li>
+                                    <li>Sobrado</li>
+                                </ul>
+                            </td>
+                            <td class="align-middle">
+                                De R$ 100.000,00 <br />
+                                a R$ 200.000,00 
+                            </td>
+                            <td class="align-middle text-center" style="width: 100px !important">
+                                <button type="button" class="btn btn-sm btn-success w-100 my-2" >ON/OFF</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger w-100 my-2" ><i class="fas fa-minus-circle"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="align-middle">
+                                <strong>Apartamento:</strong>
+                                <ul>
+                                    <li>Flat</li>
+                                    <li>Duplex</li>
+                                </ul>
+                                <strong>Casa:</strong>
+                                <ul>
+                                    <li>Terrea</li>
+                                    <li>Sobrado</li>
+                                </ul>
+                            </td>
+                            <td class="align-middle">
+                                De R$ 100.000,00 <br />
+                                a R$ 200.000,00 
+                            </td>
+                            <td class="align-middle text-center" style="width: 100px !important">
+                                <button type="button" class="btn btn-sm btn-danger w-100 my-2" >ON/OFF</button>
+                                <button type="button" class="btn btn-sm btn-outline-danger w-100 my-2" ><i class="fas fa-minus-circle"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+            </div>
+
+        </div>
+
 
     </div>
 </div>

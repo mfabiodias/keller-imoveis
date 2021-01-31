@@ -7,6 +7,7 @@ use App\Models\{
     Cliente,
     Endereco,
     Imovel,
+    Permuta,
     Range,
     SubTipo,
     Tipo,
@@ -22,13 +23,15 @@ class Index extends Component
 
     protected $paginationTheme = 'bootstrap';
     
-    public $active_tab, $caracteristicas, $clientes, $ranges, $subTipos, $tipos, $imovel, $endereco;
+    public $active_tab, $caracteristicas, $clientes, $ranges, $subTipos, $tipos, $tipoSubTipos, $imovel, $endereco, $permutas;
 
     // Usar sempre prefixo. Exe: (imo_, end_) e complementar com colunas da tabela. Exe: (prefix_coluna = imo_id)
     public $imo_id, $imo_cliente_id, $imo_tipo_id, $imo_subtipo_id, $imo_nome, $imo_quarto, $imo_suite, $imo_banheiro, 
         $imo_vagas, $imo_andar, $imo_valor_venda, $imo_valor_aluguel, $imo_condominio, $imo_iptu, $imo_area_total, 
-        $imo_area_util, $imo_posicao, $imo_chaves, $imo_caracteristica, $imo_observacao, $imo_status;
+        $imo_area_util, $imo_posicao, $imo_chaves, $imo_permuta, $imo_status, $imo_caracteristica, $imo_observacao;
     public $end_id, $end_cep, $end_rua, $end_numero, $end_complemento, $end_bairro, $end_cidade, $end_estado;
+    public $per_id;
+    public $ran_id;
 
     public function __construct() 
     {
@@ -44,12 +47,19 @@ class Index extends Component
         $this->imo_iptu          = 0;
         $this->imo_area_total    = 0;
         $this->imo_area_util     = 0;
+        $this->imo_permuta       = 'nao';
+        $this->imo_status        = 'ativo';
+        $this->imo_observacao    = '';
 
         $this->caracteristicas = $this->getCaracteristicas();
         $this->clientes        = Cliente::orderBy('nome', 'asc')->get()->toArray();
+        $this->permutas        = [];
         $this->ranges          = Range::get()->toArray();
         $this->subTipos        = [];
         $this->tipos           = Tipo::get()->toArray();
+        $this->tipoSubTipos    = Tipo::with('subtipo')->get()->toArray();
+
+        // dd(Imovel::whereJsonContains('caracteristica', [1])->get());
     }
 
     protected $listeners = [
@@ -59,21 +69,6 @@ class Index extends Component
 
     public function changeTab($active_tab) {
         $this->active_tab = $active_tab;
-    }
-
-    public function changeTipo($tipo_id, $edit=false) 
-    {
-        if(!!$tipo_id) {
-            $this->subTipos = SubTipo::where('tipo_id', $tipo_id)->get()->toArray();
-
-            $this->imo_tipo_id = $tipo_id;
-            
-            if(!$edit) {
-                $this->imo_subtipo_id = "";
-            }
-        }
-        
-        $this->dispatchBrowserEvent('pickerRender');
     }
 
     public function hydrate()
@@ -101,6 +96,8 @@ class Index extends Component
     public function edit($id)
     {
         $this->updateMode = true;
+
+        $this->permutas = Permuta::with('tipo', 'subtipo', 'range')->get()->toArray();
         
         $imovel   = Imovel::where("id", $id)->first();
         $endereco = Endereco::where("imovel_id", $id)->first();
@@ -147,6 +144,46 @@ class Index extends Component
         cepPromise($this);
     }
 
+    public function addPermuta() 
+    {
+        if(!$this->per_id) { inputError('per_id'); }
+        else if(!$this->ran_id) { inputError('ran_id'); }
+        else {
+            
+            foreach($this->per_id as $per_id)
+            {
+                list($tipo_id, $sub_tipo_id) = explode("-", $per_id);
+
+                $addPermuta = true;
+
+                foreach($this->permutas as $permuta)
+                {
+                    if($permuta["tipo_id"] == $tipo_id && $permuta["subtipo_id"] == $sub_tipo_id && $permuta["range_id"] == $this->ran_id) {
+                        $addPermuta = false;
+                    }
+                }
+
+                # Empedir duplicidade no cadastro de permutas
+                if($addPermuta)
+                {
+                    array_push($this->permutas, [
+                        "tipo_id"    => $tipo_id,
+                        "subtipo_id" => $sub_tipo_id,
+                        "range_id"   => $this->ran_id
+                    ]);
+                }
+            }
+        }
+    }
+
+    private function mountPermuta($imovel_id) 
+    {
+        foreach($this->permutas as $key => $permuta)
+        {
+            $this->permutas[$key]['imovel_id'] = $imovel_id;
+        }
+    }
+
     public function address($id)
     { 
         resetAttributes($this, 'end_');
@@ -174,10 +211,13 @@ class Index extends Component
 
     public function cancel()
     {
+        $this->permutas = [];
         $this->subTipos = [];
         $this->updateMode = false;
         resetAttributes($this, 'imo_');
         resetAttributes($this, 'end_');
+        resetAttributes($this, 'per_');
+        resetAttributes($this, 'ran_');
         $this->dispatchBrowserEvent('closeModal');
     }
 
@@ -218,18 +258,38 @@ class Index extends Component
         if($upsertStep)
         {
             // Upsert Endereço
-            $endereco = Endereco::find($this->end_id);
-            
+            $endereco_id = !!$this->end_id ? $this->end_id : "";
+            $endereco    = Endereco::find($endereco_id);
+
             if(!!$endereco) {
                 $endereco->update($data_imo);
             } else {
                 $data_imo["imovel_id"] = $imovel->id;
                 Endereco::create($data_imo);
             }
-    
-            session()->flash("type", "success");
-            session()->flash("message", "Imovel {$data_cli['nome']} {$act} com sucesso!");
+
+            // Upsert Permuta
+            $this->mountPermuta($imovel->id);
+
+            foreach($this->permutas as $p)
+            {
+                $getPermuta = Permuta::where([
+                    'tipo_id'    => $p['tipo_id'], 
+                    'subtipo_id' => $p['subtipo_id'], 
+                    'imovel_id'  => $p['imovel_id'],
+                ])->get()->toArray();
+
+                if(empty($getPermuta)) {
+                    Permuta::create($p);
+                } else {
+                    $permuta = Permuta::find($getPermuta[0]['id']);
+                    $permuta->update($p);
+                }
+            }
         }
+        
+        session()->flash("type", "success");
+        session()->flash("message", "Imovel {$data_cli['nome']} {$act} com sucesso!");
 
         resetAttributes($this, 'imo_');
         resetAttributes($this, 'end_');
@@ -237,71 +297,98 @@ class Index extends Component
         $this->dispatchBrowserEvent('closeModal');
     }
 
-        private function formValidate($type="") 
-        {
-            return $this->validate([
-                'imo_nome'          => 'required',
-                'imo_email'         => $type == 'update' ? 'required|email' : 'required|email|unique:cliente,email',
-                'imo_nacionalidade' => 'required',
-                'imo_doc_tipo'      => 'required',
-                'imo_doc_numero'    => 'required',
-                'imo_perfil'        => 'required',
-                'imo_fase'          => 'required',
-                'imo_tipo'          => 'required',
-                'imo_investidor'    => 'required',
-                'imo_origem'        => 'required',
-                'end_cep'           => 'required',
-                'end_rua'           => 'required',
-                'end_numero'        => 'required',
-                'end_bairro'        => 'required',
-                'end_cidade'        => 'required',
-                'end_estado'        => 'required',
-            ]);
-        }
+    private function formValidate($type="") 
+    {
+        return $this->validate([
+            'imo_cliente_id' => 'required',
+            'imo_tipo_id'    => 'required',
+            'imo_subtipo_id' => 'required',
+            'imo_nome'       => 'required',
+            'imo_posicao'    => 'required',
+            'imo_chaves'     => 'required',
+            'imo_permuta'    => 'required',
+            'imo_status'     => 'required',
+            'end_cep'        => 'required',
+            'end_rua'        => 'required',
+            'end_numero'     => 'required',
+            'end_bairro'     => 'required',
+            'end_cidade'     => 'required',
+            'end_estado'     => 'required',
+        ]);
+    }
 
-        protected $messages = [
-            'imo_nome.required'          => 'Nome é obrigatório.',
-            'imo_email.required'         => 'Email é obrigatório.',
-            'imo_email.email'            => 'Email inválido.',
-            'imo_email.unique'           => 'Email já cadastrado no sistema.',
-            'imo_nacionalidade.required' => 'Nacionalidade é obrigatório.',
-            'imo_doc_tipo.required'      => 'Tipo documento é obrigatório.',
-            'imo_doc_numero.required'    => 'Número do documento é obrigatório.',
-            'imo_perfil.required'        => 'Perfil é obrigatório.',
-            'imo_fase.required'          => 'Fase é obrigatório.',
-            'imo_tipo.required'          => 'Tipo de Pessoa é obrigatório.',
-            'imo_investidor.required'    => 'Investidor é obrigatório.',
-            'imo_origem.required'        => 'Origem é obrigatório.',
-            'end_cep.required'           => 'CEP é obrigatório.',
-            'end_rua.required'           => 'Rua é obrigatório.',
-            'end_numero.required'        => 'Número é obrigatório.',
-            'end_bairro.required'        => 'Bairro é obrigatório.',
-            'end_cidade.required'        => 'Cidade é obrigatório.',
-            'end_estado.required'        => 'Estado é obrigatório.',
-        ];
+    protected $messages = [
+        'imo_cliente_id.required' => 'Cliente é obrigatório.',
+        'imo_tipo_id.required'    => 'Tipo é obrigatório.',
+        'imo_subtipo_id.required' => 'Subtipo é obrigatório.',
+        'imo_nome.required'       => 'Nome é obrigatório.',
+        'imo_posicao.required'    => 'Posição é obrigatório.',
+        'imo_chaves.required'     => 'Chaves é obrigatório.',
+        'imo_permuta.required'    => 'Permuta é obrigatório.',
+        'imo_status.required'     => 'Status é obrigatório.',
+        'end_cep.required'        => 'CEP é obrigatório.',
+        'end_rua.required'        => 'Rua é obrigatório.',
+        'end_numero.required'     => 'Número é obrigatório.',
+        'end_bairro.required'     => 'Bairro é obrigatório.',
+        'end_cidade.required'     => 'Cidade é obrigatório.',
+        'end_estado.required'     => 'Estado é obrigatório.',
+    ];
 
     private function dataForm(&$data, $prefix)
     {
         # Formatar dados
         $conv = gettype($data) === 'object';
         
+        # Normaliza dados
         foreach($data as $key => $item)
         {
-            if($key == 'imo_nome') {
+            if($key == 'imo_nome') 
+            {
                 if($conv) $data->$key = ucwords($item);
                 else $data[$key] = ucwords($item);    
             } 
+
+            if($key == 'imo_caracteristica') 
+            {
+                if($conv) {
+                    if(!is_null($data->$key) && !empty($data->$key)) {
+                        $data->$key = json_encode($item);
+                    }
+                }
+                else {
+                    if(!is_null($data[$key]) && !empty($data[$key])) {
+                        $data[$key] = json_encode($item);
+                    } 
+                }     
+            }
         }
 
-        # Renomer coluna de dados
+        # Separa dados da tabela com base no prefix
         $rtn = array();
 
-        foreach($data as $key => $item) {
-            $key = str_replace($prefix, "", $key);
-            $rtn[$key] = $item;
+        foreach($data as $key => $item) 
+        {
+            if(strpos($key, $prefix) !== false)
+            {
+                $key = str_replace($prefix, "", $key);
+                $rtn[$key] = $item;
+            }
         }
 
         return $rtn;
+    }
+
+    public function changeTipo($tipo_id, $edit=false) 
+    {
+        if(!!$tipo_id) {
+            $this->subTipos = SubTipo::where('tipo_id', $tipo_id)->get()->toArray();
+
+            $this->imo_tipo_id = $tipo_id;
+            
+            if(!$edit) {
+                $this->imo_subtipo_id = "";
+            }
+        }
     }
 
     private function getCaracteristicas() 

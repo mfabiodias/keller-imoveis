@@ -1,4 +1,4 @@
-<ul class="nav nav-tabs" id="clientTab" role="tablist">
+<ul class="nav nav-tabs toggle-tab" id="clientTab" role="tablist">
     <li class="nav-item" role="presentation">
         <a class="nav-link {{ empty($active_tab) || $active_tab == 'cliente-tab' ? 'active' : '' }}" id="cliente-tab" 
         data-toggle="tab" href="#cliente" role="tab" aria-controls="cliente" 
@@ -11,6 +11,7 @@
     </li>
 </ul>
 <div class="tab-content" id="clientTabContent">
+    
     {{-- Dados do Cliente --}}
     <div class="tab-pane pt-3 fade {{ empty($active_tab) || $active_tab == 'cliente-tab' ? 'show active' : '' }}" id="cliente" role="tabpanel" aria-labelledby="cliente-tab">
         <div class="form-row">
@@ -172,8 +173,10 @@
             </div>
         </div>
     </div>
+
     {{-- Endereço do Cliente --}}
     <div class="tab-pane pt-3 fade {{ $active_tab == 'endereco-tab' ? 'show active' : '' }}" id="endereco" role="tabpanel" aria-labelledby="endereco-tab">
         @include('livewire.endereco.crud')
     </div>
+
 </div>

@@ -15,11 +15,11 @@ class CreatePermutaTable extends Migration
     {
         Schema::create('permuta', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('cliente_id')->constrained('cliente');
+            $table->foreignId('imovel_id')->constrained('imovel');
             $table->foreignId('tipo_id')->constrained('tipo');
             $table->foreignId('subtipo_id')->constrained('subtipo');
             $table->foreignId('range_id')->constrained('range');
-            $table->enum('status', [ "Ativo" , "Inativo" ]);
+            $table->enum('status', [ "ativo" , "inativo" ])->default("ativo");
             $table->timestamps();
         });
     }
