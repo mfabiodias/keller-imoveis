@@ -72,8 +72,8 @@ class Index extends Component
         $cliente  = Cliente::where("id", $id)->first();
         $endereco = Endereco::where("cliente_id", $id)->first();
 
-        if($cliente)  { bindData($this, "cli_", $cliente); }
-        if($endereco) { bindData($this, "end_", $endereco); }
+        if(!is_null($cliente)) { bindData($this, "cli_", $cliente->toArray()); }
+        if(!is_null($endereco)) { bindData($this, "end_", $endereco->toArray()); }
     }
     
     public function delete(Cliente $cliente)
@@ -139,6 +139,7 @@ class Index extends Component
 
     public function cancel()
     {
+        $this->active_tab = "cliente-tab";
         $this->updateMode = false;
         resetAttributes($this, 'cli_');
         resetAttributes($this, 'end_');

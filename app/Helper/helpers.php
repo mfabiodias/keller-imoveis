@@ -62,24 +62,15 @@ function resetAttributes(&$_this, $prefix)
 }
 
 # Funcão que preenche variáveis da classe
-function bindData(&$_this, $prefix, $data)
+function bindData(&$lthis, $prefix, $data)
 {
-    $varData = [];
-    
     # Recupera dados da tabela
-    foreach((array)$data as $key => $obj) {
-        if(strpos($key, "attributes") !== false) {
-            $varData = (array)$obj;
-        }
-    }
-    
-    # Realiza bind na variáveis da classe
-    foreach ($varData as $key => $val) 
+    foreach($data as $key => $val) 
     {
         $attr = $prefix.$key;
-
-        if(property_exists($_this, $attr)) {
-            $_this->$attr = $val;
+        
+        if(property_exists($lthis, $attr)) {
+            $lthis->$attr = $val;
         }
     }
 }

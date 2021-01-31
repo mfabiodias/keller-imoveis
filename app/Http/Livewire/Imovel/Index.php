@@ -100,12 +100,14 @@ class Index extends Component
         $this->permutas = Permuta::with('tipo', 'subtipo', 'range')->get()->toArray();
         
         $imovel   = Imovel::where("id", $id)->first();
-        $endereco = Endereco::where("imovel_id", $id)->first();
+        $endereco = Endereco::where("cliente_id", $id)->first();
 
-        if($imovel)  { bindData($this, "imo_", $imovel); }
-        if($endereco) { bindData($this, "end_", $endereco); }
+        if(!is_null($imovel)) { 
+            bindData($this, "cli_", $imovel->toArray()); 
+            $this->changeTipo($imovel->toArray()["tipo_id"], true);
+        }
         
-        $this->changeTipo($imovel->toArray()["tipo_id"], true);
+        if(!is_null($endereco)) { bindData($this, "end_", $endereco->toArray()); }
     }
     
     public function delete(Imovel $imovel)
@@ -213,6 +215,7 @@ class Index extends Component
     {
         $this->permutas = [];
         $this->subTipos = [];
+        $this->active_tab = "imovel-tab";
         $this->updateMode = false;
         resetAttributes($this, 'imo_');
         resetAttributes($this, 'end_');
