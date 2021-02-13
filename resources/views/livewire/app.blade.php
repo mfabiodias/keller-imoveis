@@ -20,20 +20,20 @@
     <header>
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-            <a class="navbar-brand" href="{{ route('home') }}">Keller Imóveis</a>
+            <a class="navbar-brand" href="{{ route('cliente') }}">Keller Imóveis</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarCollapse">
                 <ul class="navbar-nav mr-auto">
-                    <li class="nav-item <?= my_route() ? 'active' : '' ?>">
-                        <a class="nav-link" href="{{ route('home') }}">Home <?= my_route() ? '<span class="sr-only">(current)</span>' : '' ?></a>
-                    </li>
                     <li class="nav-item <?= my_route('cliente') ? 'active' : '' ?>">
                         <a class="nav-link" href="{{ route('cliente') }}">Cliente <?= my_route("cliente") ? '<span class="sr-only">(current)</span>' : '' ?></a>
                     </li>
                     <li class="nav-item <?= my_route('imovel') ? 'active' : '' ?>">
                         <a class="nav-link" href="{{ route('imovel') }}">Imóveis <?= my_route("imovel") ? '<span class="sr-only">(current)</span>' : '' ?></a>
+                    </li>
+                    <li class="nav-item <?= my_route() ? 'active' : '' ?>">
+                        <a class="nav-link" href="{{ route('permuta') }}">Permuta <?= my_route() ? '<span class="sr-only">(current)</span>' : '' ?></a>
                     </li>
                 </ul>
             </div>

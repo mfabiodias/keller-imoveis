@@ -18,7 +18,7 @@
                 <x-alert />
             @endif
 
-            <div class="d-none d-md-block">
+            <div class="d-none d-md-block" >
                 <table class="datatable-default table table-sm table-bordered table-striped table-md-responsive mt-3">
                     <thead>
                         <tr>

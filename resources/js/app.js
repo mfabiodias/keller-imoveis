@@ -8,13 +8,21 @@ window.addEventListener('closeModal', event => {
     $('.modal').modal('hide');
 });
 
+window.addEventListener('openModal', event => {
+    mountLoadPage();
+});
+
 window.addEventListener('closeLoader', event => {
     $("#loader").hide();
 });
 
 window.addEventListener('bootstrapSelectValues', event => {
     $(`.${event.detail.attr}`).selectpicker('val', event.detail.values);
-})
+});
+
+window.addEventListener('livewire:load', event => {
+    mountLoadPage();
+});
 
 /* #####################
 #######  Jquery  #######
@@ -34,8 +42,24 @@ $('.cep').on('keyup', function() {
     $(this).val(numberOnly($(this).val()));
 });
 
-$(document).ready(function() 
-{
+$('.modal').on('shown.bs.modal', function (event) {
+    mountLoadPage();
+});
+
+$('.modal').on('hidden.bs.modal', function (event) {
+    mountLoadPage();
+});
+
+
+/* #####################
+#########  JS  #########
+##################### */
+
+function numberOnly(str) {
+    return str.replace(/[^0-9.]/g, "");
+}
+
+function mountLoadPage() {
     $('.datatable-default tfoot th').each( function () {
         var title = $(this).text();
         $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
@@ -69,13 +93,4 @@ $(document).ready(function()
             });
         }
     });
-});
-
-
-/* #####################
-#########  JS  #########
-##################### */
-
-function numberOnly(str) {
-    return str.replace(/[^0-9.]/g, "");
 }
