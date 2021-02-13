@@ -59,38 +59,42 @@ function numberOnly(str) {
     return str.replace(/[^0-9.]/g, "");
 }
 
-function mountLoadPage() {
-    $('.datatable-default tfoot th').each( function () {
-        var title = $(this).text();
-        $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
-    } );
-
-    $('.datatable-default').DataTable( {
-        lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
-        language: {
-            lengthMenu: "Exibir _MENU_ por página",
-            zeroRecords: "Nenhum registro encontrado!",
-            info: "Página _PAGE_ de _PAGES_",
-            infoEmpty: "Nenhum registro",
-            infoFiltered: "(Filtrado de _MAX_ registros totais)",
-            search: "Buscar",
-            next: "Próximo",
-            paginate: {
-                first:    "Primeiro",
-                last:     "Último",
-                next:     "Próximo",
-                previous: "Anterior"
-            }
-        },
-        initComplete: function () {
-            this.api().columns().every( function () {
-                var that = this;
-                $( 'input', this.footer() ).on( 'keyup change clear', function () {
-                    if ( that.search() !== this.value ) {
-                        that.search( this.value ).draw();
-                    }
+function mountLoadPage() 
+{
+    if(!$.fn.dataTable.isDataTable(".datatable-default")) 
+    {
+        $('.datatable-default tfoot th').each( function () {
+            var title = $(this).text();
+            $(this).html( '<input type="text" placeholder="Buscar '+title+'" />' );
+        } );
+    
+        $('.datatable-default').DataTable( {
+            lengthMenu: [[5, 10, 25, 50, -1], [5, 10, 25, 50, "Todos"]],
+            language: {
+                lengthMenu: "Exibir _MENU_ por página",
+                zeroRecords: "Nenhum registro encontrado!",
+                info: "Página _PAGE_ de _PAGES_",
+                infoEmpty: "Nenhum registro",
+                infoFiltered: "(Filtrado de _MAX_ registros totais)",
+                search: "Buscar",
+                next: "Próximo",
+                paginate: {
+                    first:    "Primeiro",
+                    last:     "Último",
+                    next:     "Próximo",
+                    previous: "Anterior"
+                }
+            },
+            initComplete: function () {
+                this.api().columns().every( function () {
+                    var that = this;
+                    $( 'input', this.footer() ).on( 'keyup change clear', function () {
+                        if ( that.search() !== this.value ) {
+                            that.search( this.value ).draw();
+                        }
+                    });
                 });
-            });
-        }
-    });
+            }
+        });
+    }
 }

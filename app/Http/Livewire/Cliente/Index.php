@@ -22,7 +22,7 @@ class Index extends Component
         "end" => "endereco-tab",
     ];
     
-    public $required_inputs, $active_tab, $cliente, $endereco, $confirmDelete, $confirmLabel;
+    public $required_inputs, $active_tab, $cliente, $endereco, $clienteImovel, $confirmDelete, $confirmLabel;
 
     // Usar sempre prefixo. Exe: (cli_, end_) e complementar com colunas da tabela. Exe: (prefix_coluna = cli_id)
     public $cli_id, $cli_nome, $cli_email, $cli_tel_residencial, $cli_tel_comercial, $cli_cel, $cli_cel_operadora, 
@@ -153,8 +153,9 @@ class Index extends Component
 
     public function card($id)
     {
-        $this->cliente  = Cliente::where("id", $id)->first();
-        $this->endereco = Endereco::where("cliente_id", $id)->first();
+        $this->cliente       = Cliente::where("id", $id)->first();
+        $this->endereco      = Endereco::where("cliente_id", $id)->first();
+        $this->clienteImovel = Imovel::with('tipo', 'subtipo', 'endereco')->where("cliente_id", $id)->get();
     }
 
     public function cancel()
@@ -222,6 +223,7 @@ class Index extends Component
     {
         $this->confirmDelete = false;
         $this->confirmLabel  = false;
+        $this->clienteImovel = false;
         $this->updateMode    = false;
         $this->changeTab("cliente-tab");
         resetAttributes($this, 'cli_');

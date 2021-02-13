@@ -117,9 +117,9 @@
         "btn-color" => "primary",
         "function"  => "",
         "valign"    => true, // true || false
-        "scroll"    => false, // true || false
-        "size"      => "", // sm, lg, xl
-        "height"    => "", 
+        "scroll"    => true, // true || false
+        "size"      => "lg", // sm, lg, xl
+        "height"    => "",  
         "body"      => "livewire.cliente.card",
     ]])
     
