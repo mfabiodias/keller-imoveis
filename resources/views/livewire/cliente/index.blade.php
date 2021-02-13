@@ -12,13 +12,13 @@
     </div>
 
     <div class="row">
-        <div class="col-12">
+        <div class="col-12 mt-3">
             
             @if(session()->has('type') && session()->has('message'))
                 <x-alert />
             @endif
 
-            <table class="table table-sm table-bordered table-striped table-md-responsive mt-5">
+            <table class="datatable-default table table-sm table-bordered table-striped table-md-responsive mt-3">
                 <thead>
                     <tr>
                         <th>No.</th>
@@ -53,11 +53,19 @@
                     </tr>
                     @endforeach
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <th>No.</th>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>Ações</th>
+                    </tr>
+                </tfoot>
             </table>
         </div>
     </div>
 
-    {{ $collection->links() }}
+    {{-- {{ $collection->links() }} --}}
 
     @include("components.modal", [ "modal" => [
         "id"        => "createModal",

@@ -12,21 +12,20 @@
     </div>
 
     <div class="row">
-        <div class="col-12">
+        <div class="col-12 mt-3">
             
             @if(session()->has('type') && session()->has('message'))
                 <x-alert />
             @endif
 
             <div class="d-none d-md-block">
-                <table class="table table-sm table-bordered table-striped table-md-responsive mt-5">
+                <table class="datatable-default table table-sm table-bordered table-striped table-md-responsive mt-3">
                     <thead>
                         <tr>
                             <th>No.</th>
                             <th>Cliente</th>
                             <th>Tipo</th>
                             <th>Local</th>
-                            {{-- <th class="d-block d-md-none">Imóvel</th> --}}
                             <th>Ações</th>
                         </tr>
                     </thead>
@@ -57,10 +56,19 @@
                         </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>No.</th>
+                            <th>Cliente</th>
+                            <th>Tipo</th>
+                            <th>Local</th>
+                            <th>Ações</th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
             <div class="d-block d-md-none">
-                <table class="table table-sm table-bordered table-striped table-md-responsive mt-5">
+                <table class="datatable-default table table-sm table-bordered table-striped table-md-responsive mt-5">
                     <thead>
                         <tr>
                             <th>Imóvel</th>
@@ -98,13 +106,20 @@
                         </tr>
                         @endforeach
                     </tbody>
+                    <tfoot>
+                        <tr>
+                            <th>Imóvel</th>
+                            <th>Ações</th>
+                        </tr>
+                    </tfoot>
                 </table>
             </div>
         </div>
     </div>
 
-    {{ $collection->links() }}
+    {{-- {{ $collection->links() }} --}}
 
+   
     @include("components.modal", [ "modal" => [
         "id"        => "createModal",
         "label"     => "createModalLabel",

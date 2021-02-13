@@ -64,3 +64,8 @@ label { color: #6c757d !important; }
     font-size: small;
   }
 }
+
+.table tfoot th input[type=text]
+{
+  width: 100% !important;
+}

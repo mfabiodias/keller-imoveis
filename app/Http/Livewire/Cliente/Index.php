@@ -14,9 +14,8 @@ use Livewire\{
 
 class Index extends Component
 {
-    use WithPagination;
-
-    protected $paginationTheme = 'bootstrap';
+    // use WithPagination;
+    // protected $paginationTheme = 'bootstrap';
 
     public $type_tab = [
         "cli" => "cliente-tab",
@@ -59,7 +58,8 @@ class Index extends Component
     {
         return view('livewire.cliente.index', [
             'comp_name'  => 'Cliente',
-            'collection' => Cliente::paginate(5)
+            // 'collection' => Cliente::paginate(5)
+            'collection' => Cliente::get()
         ]);
     }
 

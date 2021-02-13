@@ -19,9 +19,8 @@ use Livewire\{
 
 class Index extends Component
 {
-    use WithPagination;
-
-    protected $paginationTheme = 'bootstrap';
+    // use WithPagination;
+    // protected $paginationTheme = 'bootstrap';
 
     public $type_tab = [
         "imo" => "imovel-tab",
@@ -89,7 +88,8 @@ class Index extends Component
     {
         return view('livewire.imovel.index', [
             'comp_name'  => 'Imóvel',
-            'collection' => Imovel::with('cliente', 'tipo', 'subtipo', 'endereco')->paginate(5)
+            // 'collection' => Imovel::with('cliente', 'tipo', 'subtipo', 'endereco')->paginate(5)
+            'collection' => Imovel::with('cliente', 'tipo', 'subtipo', 'endereco')->get()
         ]);
     }
 
