@@ -14,8 +14,8 @@ class Imovel extends Model
     protected $fillable   = [
         'cliente_id', 'tipo_id', 'subtipo_id', 'nome', 'quarto', 'suite', 
         'banheiro', 'vagas', 'andar', 'valor_venda', 'valor_aluguel', 
-        'condominio', 'iptu', 'area_total', 'area_util', 'posicao', 
-        'informacao', 'caracteristica', 'status'
+        'condominio', 'iptu', 'area_total', 'area_util', 'posicao', 'chaves', 
+        'permuta', 'status', 'caracteristica', 'observacao'
     ];
 
     public function endereco()

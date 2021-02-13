@@ -39,7 +39,7 @@ if($errors->any())
                     <div wire:ignore>
                         <input type="hidden" wire:model.defer="imo_id">
                         <label for="ipt1">Cliente</label>
-                        <select id="ipt1" class="selectpicker" data-live-search="true" data-width="100%" wire:model.defer="imo_cliente_id" >
+                        <select id="ipt1" class="selectpicker imo_cliente_id" data-live-search="true" data-width="100%" wire:model.defer="imo_cliente_id" >
                             <option value="" {{ !$imo_cliente_id ? 'selected' : '' }}>Selecione o Cliente</option>
                             @foreach ($clientes as $cliente)
                                 <option 
@@ -232,7 +232,7 @@ if($errors->any())
                 <div class="form-group">
                     <div wire:ignore>
                         <label for="ipt20">Caracteresticas</label>
-                        <select id="ipt20" class="selectpicker" multiple data-width="100%" wire:model.defer="imo_caracteristica" >
+                        <select id="ipt20" class="selectpicker imo_caracteristica" multiple data-width="100%" wire:model.defer="imo_caracteristica" >
                             <?php 
                             foreach($caracteristicas as $tipo => $tipo_caracteristicas) 
                             {

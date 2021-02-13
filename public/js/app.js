@@ -12,6 +12,10 @@ window.addEventListener('closeLoader', event => {
     $("#loader").hide();
 });
 
+window.addEventListener('bootstrapSelectValues', event => {
+    $(`.${event.detail.attr}`).selectpicker('val', event.detail.values);
+})
+
 /* #####################
 #######  Jquery  #######
 ##################### */

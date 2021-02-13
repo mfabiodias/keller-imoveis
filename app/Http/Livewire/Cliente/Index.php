@@ -4,7 +4,8 @@ namespace App\Http\Livewire\Cliente;
 
 use App\Models\{
     Cliente,
-    Endereco
+    Endereco,
+    Imovel
 };
 use Livewire\{
     Component,
@@ -88,15 +89,16 @@ class Index extends Component
         
         if($id)
         {
-            $enderecos = Endereco::where("cliente_id", $id)->count();
+            $imovel = Imovel::where("cliente_id", $id)->count();
 
-            if($enderecos > 0)
+            if($imovel > 0)
             {
                 session()->flash("type", "danger");
-                session()->flash("message", "Cliente {$nome} tem {$enderecos} endereço(s) e não pode ser excluído.");
+                session()->flash("message", "Cliente {$nome} tem {$imovel} imóvel(s) cadastrados e não pode ser excluído.");
             }
             else 
             {
+                Endereco::where("cliente_id", $id)->delete();
                 Cliente::where("id", $id)->delete();
 
                 if(Cliente::where("id", $id)->count() > 0)
@@ -110,6 +112,11 @@ class Index extends Component
                     session()->flash("message", "Cliente {$nome} excluído com sucesso");
                 }
             }
+        }
+        else 
+        {
+            session()->flash("type", "danger");
+            session()->flash("message", "Falha ao excluir o cliente! Tente novamente e persistindo o erro contate o administrador.");
         }
     }
 
@@ -144,11 +151,7 @@ class Index extends Component
 
     public function cancel()
     {
-        $this->changeTab("cliente-tab");
-        $this->updateMode = false;
-        resetAttributes($this, 'cli_');
-        resetAttributes($this, 'end_');
-        $this->dispatchBrowserEvent('closeModal');
+        $this->cleanFormData();
     }
 
     private function upsert($type="")
@@ -204,9 +207,15 @@ class Index extends Component
         session()->flash("type", "success");
         session()->flash("message", "Cliente {$data_cli['nome']} {$act} com sucesso!");
 
+        $this->cleanFormData();
+    }
+    
+    private function cleanFormData()
+    {
+        $this->updateMode = false;
+        $this->changeTab("cliente-tab");
         resetAttributes($this, 'cli_');
         resetAttributes($this, 'end_');
-        
         $this->dispatchBrowserEvent('closeModal');
     }
 

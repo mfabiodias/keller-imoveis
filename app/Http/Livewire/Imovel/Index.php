@@ -186,12 +186,17 @@ class Index extends Component
         $imovel   = Imovel::where("id", $id)->first();
         $endereco = Endereco::where("imovel_id", $id)->first();
 
+        // dd([$imovel->caracteristica, json_decode($imovel->caracteristica, true)]);
+
         if(!is_null($imovel)) { 
-            bindData($this, "cli_", $imovel->toArray()); 
+            bindData($this, "imo_", $imovel->toArray()); 
             $this->changeTipo($imovel->toArray()["tipo_id"], true);
         }
         
         if(!is_null($endereco)) { bindData($this, "end_", $endereco->toArray()); }
+
+        $this->dispatchBrowserEvent('bootstrapSelectValues', ['attr' => "imo_cliente_id", 'values' => $imovel->cliente_id]);
+        $this->dispatchBrowserEvent('bootstrapSelectValues', ['attr' => "imo_caracteristica", 'values' => json_decode($imovel->caracteristica, true)]);
     }
     
     public function delete(Imovel $imovel)
@@ -201,28 +206,25 @@ class Index extends Component
         
         if($id)
         {
-            $enderecos = Endereco::where("imovel_id", $id)->count();
+            Endereco::where("imovel_id", $id)->delete();
+            Permuta::where("imovel_id", $id)->delete();
+            Imovel::where("id", $id)->delete();
 
-            if($enderecos > 0)
+            if(Imovel::where("id", $id)->count() > 0)
             {
                 session()->flash("type", "danger");
-                session()->flash("message", "Imovel {$nome} tem {$enderecos} endereço(s) e não pode ser excluído.");
+                session()->flash("message", "Falha ao excluir o imóvel {$nome}! Tente novamente e persistindo o erro contate o administrador.");
             }
             else 
             {
-                Imovel::where("id", $id)->delete();
-
-                if(Imovel::where("id", $id)->count() > 0)
-                {
-                    session()->flash("type", "danger");
-                    session()->flash("message", "Falha ao excluir o cliente {$nome}! Tente novamente e persistindo o erro contate o administrador.");
-                }
-                else 
-                {
-                    session()->flash("type", "success");
-                    session()->flash("message", "Imovel {$nome} excluído com sucesso");
-                }
+                session()->flash("type", "success");
+                session()->flash("message", "Imovel {$nome} excluído com sucesso");
             }
+        }
+        else 
+        {
+            session()->flash("type", "danger");
+            session()->flash("message", "Falha ao excluir o imóvel! Tente novamente e persistindo o erro contate o administrador.");
         }
     }
 
@@ -307,15 +309,7 @@ class Index extends Component
 
     public function cancel()
     {
-        $this->permutas = [];
-        $this->subTipos = [];
-        $this->changeTab("imovel-tab");
-        $this->updateMode = false;
-        resetAttributes($this, 'imo_');
-        resetAttributes($this, 'end_');
-        resetAttributes($this, 'per_');
-        resetAttributes($this, 'ran_');
-        $this->dispatchBrowserEvent('closeModal');
+        $this->cleanFormData();
     }
 
     private function upsert($type="")
@@ -327,6 +321,8 @@ class Index extends Component
 
         $data_imo = $this->dataForm($this, 'imo_');
         $data_end = $this->dataForm($this, 'end_');
+
+        //dd([$type, $this->list_permutas, $data_imo, $data_end]);
 
         if($type == "update")
         {
@@ -389,9 +385,22 @@ class Index extends Component
         session()->flash("type", "success");
         session()->flash("message", "Imovel {$data_imo['nome']} {$act} com sucesso!");
 
+        $this->cleanFormData();
+    }
+
+    private function cleanFormData()
+    {
+        $this->list_permutas = [];
+        $this->permutas      = [];
+        $this->subTipos      = [];
+        $this->updateMode    = false;
+        $this->changeTab("imovel-tab");
         resetAttributes($this, 'imo_');
         resetAttributes($this, 'end_');
-        
+        resetAttributes($this, 'per_');
+        resetAttributes($this, 'ran_');
+        $this->dispatchBrowserEvent('bootstrapSelectValues', ['attr' => "imo_cliente_id", 'values' => ""]);
+        $this->dispatchBrowserEvent('bootstrapSelectValues', ['attr' => "imo_caracteristica", 'values' => ""]);
         $this->dispatchBrowserEvent('closeModal');
     }
 
@@ -452,12 +461,12 @@ class Index extends Component
             {
                 if($conv) {
                     if(!is_null($data->$key) && !empty($data->$key)) {
-                        $data->$key = json_encode($item);
+                        $data->$key = is_array($item) ? json_encode($item) : $item;
                     }
                 }
                 else {
                     if(!is_null($data[$key]) && !empty($data[$key])) {
-                        $data[$key] = json_encode($item);
+                        $data[$key] = is_array($item) ? json_encode($item) : $item;
                     } 
                 }     
             }
