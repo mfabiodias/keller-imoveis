@@ -22,7 +22,7 @@
             <div class="modal-footer">
                 <button type="button" wire:click.prevent="cancel()" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
                 @if(!empty($modal["action"]) && !empty($modal["function"]))
-                    <button type="button" wire:click.prevent="{{ $modal["function"] }}" class="btn btn-primary">{{ $modal["action"] }}</button>
+                    <button type="button" wire:click.prevent="{{ $modal["function"] }}" class="btn btn-{{ $modal["btn-color"] }}">{{ $modal["action"] }}</button>
                 @endif
             </div>
        </div>

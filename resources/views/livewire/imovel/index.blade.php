@@ -50,7 +50,8 @@
                                 ></i>
                                 <i class="fas fa-user-minus text-danger app-cursor" 
                                     title="Excluir {{ $comp_name }}"
-                                    wire:click="delete({{ $item->id }})"
+                                    wire:click="confirm({{ $item->id }})"
+                                    data-toggle="modal" data-target="#deleteModal"
                                 ></i>
                             </td>
                         </tr>
@@ -90,7 +91,8 @@
                                 ></i>
                                 <i class="fas fa-user-minus text-danger app-cursor" 
                                     title="Excluir {{ $comp_name }}"
-                                    wire:click="delete({{ $item->id }})"
+                                    wire:click="confirm({{ $item->id }})"
+                                    data-toggle="modal" data-target="#deleteModal"
                                 ></i>
                             </td>
                         </tr>
@@ -104,29 +106,45 @@
     {{ $collection->links() }}
 
     @include("components.modal", [ "modal" => [
-        "id"       => "createModal",
-        "label"    => "createModalLabel",
-        "title"    => "Cadastrar Imóvel",
-        "action"   => "Cadastrar",
-        "function" => "create()",
-        "valign"   => true, // true || false
-        "scroll"   => true, // true || false
-        "size"     => "xl", // sm, lg, xl
-        "height"   => "100%", 
-        "body"     => "livewire.imovel.crud",
+        "id"        => "createModal",
+        "label"     => "createModalLabel",
+        "title"     => "Cadastrar Imóvel",
+        "action"    => "Cadastrar",
+        "btn-color" => "primary",
+        "function"  => "create()",
+        "valign"    => true, // true || false
+        "scroll"    => true, // true || false
+        "size"      => "xl", // sm, lg, xl
+        "height"    => "100%", 
+        "body"      => "livewire.imovel.crud",
     ]])
 
     @include("components.modal", [ "modal" => [
-        "id"       => "updateModal",
-        "label"    => "updateModalLabel",
-        "title"    => "Atualizar Imóvel",
-        "action"   => "Atualizar",
-        "function" => "update()",
-        "valign"   => true, // true || false
-        "scroll"   => true, // true || false
-        "size"     => "xl", // sm, lg, xl
-        "height"   => "100%", 
-        "body"     => "livewire.imovel.crud",
+        "id"        => "updateModal",
+        "label"     => "updateModalLabel",
+        "title"     => "Atualizar Imóvel",
+        "action"    => "Atualizar",
+        "btn-color" => "primary",
+        "function"  => "update()",
+        "valign"    => true, // true || false
+        "scroll"    => true, // true || false
+        "size"      => "xl", // sm, lg, xl
+        "height"    => "100%", 
+        "body"      => "livewire.imovel.crud",
+    ]])
+
+    @include("components.modal", [ "modal" => [
+        "id"        => "deleteModal",
+        "label"     => "deleteModalLabel",
+        "title"     => "Excluir Imóvel",
+        "action"    => "Excluir",
+        "btn-color" => "danger",
+        "function"  => "delete()",
+        "valign"    => true, // true || false
+        "scroll"    => false, // true || false
+        "size"      => "", // sm, lg, xl
+        "height"    => "", 
+        "body"      => "components.confirm",
     ]])
 
     {{-- @include("components.modal", [ "modal" => [

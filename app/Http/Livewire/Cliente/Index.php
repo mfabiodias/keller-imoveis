@@ -23,7 +23,7 @@ class Index extends Component
         "end" => "endereco-tab",
     ];
     
-    public $required_inputs, $active_tab, $cliente, $endereco;
+    public $required_inputs, $active_tab, $cliente, $endereco, $confirmDelete, $confirmLabel;
 
     // Usar sempre prefixo. Exe: (cli_, end_) e complementar com colunas da tabela. Exe: (prefix_coluna = cli_id)
     public $cli_id, $cli_nome, $cli_email, $cli_tel_residencial, $cli_tel_comercial, $cli_cel, $cli_cel_operadora, 
@@ -81,11 +81,17 @@ class Index extends Component
         if(!is_null($cliente)) { bindData($this, "cli_", $cliente->toArray()); }
         if(!is_null($endereco)) { bindData($this, "end_", $endereco->toArray()); }
     }
-    
-    public function delete(Cliente $cliente)
+
+    public function confirm(Cliente $cliente)
     {
-        $id   = $cliente->id;
-        $nome = $cliente->nome;
+        $this->confirmDelete = $cliente;
+        $this->confirmLabel  = $cliente->nome;
+    }
+    
+    public function delete()
+    {
+        $id   = $this->confirmDelete->id;
+        $nome = $this->confirmDelete->nome;
         
         if($id)
         {
@@ -118,6 +124,8 @@ class Index extends Component
             session()->flash("type", "danger");
             session()->flash("message", "Falha ao excluir o cliente! Tente novamente e persistindo o erro contate o administrador.");
         }
+
+        $this->cleanFormData();
     }
 
     public function getCep() {
@@ -212,7 +220,9 @@ class Index extends Component
     
     private function cleanFormData()
     {
-        $this->updateMode = false;
+        $this->confirmDelete = false;
+        $this->confirmLabel  = false;
+        $this->updateMode    = false;
         $this->changeTab("cliente-tab");
         resetAttributes($this, 'cli_');
         resetAttributes($this, 'end_');

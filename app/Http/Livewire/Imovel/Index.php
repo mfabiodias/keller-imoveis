@@ -30,7 +30,7 @@ class Index extends Component
     ];
     
     public $required_inputs, $active_tab, $caracteristicas, $clientes, $ranges, $subTipos, $tipos, $tipoSubTipos, 
-        $imovel, $endereco, $permutas, $list_permutas;
+        $imovel, $endereco, $permutas, $list_permutas, $confirmDelete, $confirmLabel;
 
     // Usar sempre prefixo. Exe: (imo_, end_) e complementar com colunas da tabela. Exe: (prefix_coluna = imo_id)
     public $imo_id, $imo_cliente_id, $imo_tipo_id, $imo_subtipo_id, $imo_nome, $imo_quarto, $imo_suite, $imo_banheiro, 
@@ -199,10 +199,16 @@ class Index extends Component
         $this->dispatchBrowserEvent('bootstrapSelectValues', ['attr' => "imo_caracteristica", 'values' => json_decode($imovel->caracteristica, true)]);
     }
     
-    public function delete(Imovel $imovel)
+    public function confirm(Imovel $imovel)
     {
-        $id   = $imovel->id;
-        $nome = $imovel->nome;
+        $this->confirmDelete = $imovel;
+        $this->confirmLabel  = $imovel->nome;
+    }
+    
+    public function delete()
+    {
+        $id   = $this->confirmDelete->id;
+        $nome = $this->confirmDelete->nome;
         
         if($id)
         {
@@ -226,6 +232,8 @@ class Index extends Component
             session()->flash("type", "danger");
             session()->flash("message", "Falha ao excluir o imóvel! Tente novamente e persistindo o erro contate o administrador.");
         }
+
+        $this->cleanFormData();
     }
 
     public function getCep() {
@@ -393,6 +401,8 @@ class Index extends Component
         $this->list_permutas = [];
         $this->permutas      = [];
         $this->subTipos      = [];
+        $this->confirmDelete = false;
+        $this->confirmLabel  = false;
         $this->updateMode    = false;
         $this->changeTab("imovel-tab");
         resetAttributes($this, 'imo_');

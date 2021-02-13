@@ -46,7 +46,8 @@
                             ></i>
                             <i class="fas fa-user-minus text-danger app-cursor" 
                                 title="Excluir {{ $comp_name }}"
-                                wire:click="delete({{ $item->id }})"
+                                wire:click="confirm({{ $item->id }})" 
+                                data-toggle="modal" data-target="#deleteModal"
                             ></i>
                         </td>
                     </tr>
@@ -59,42 +60,59 @@
     {{ $collection->links() }}
 
     @include("components.modal", [ "modal" => [
-        "id"       => "createModal",
-        "label"    => "createModalLabel",
-        "title"    => "Cadastrar Cliente",
-        "action"   => "Cadastrar",
-        "function" => "create()",
-        "valign"   => true, // true || false
-        "scroll"   => true, // true || false
-        "size"     => "lg", // sm, lg, xl
-        "height"   => "100%", 
-        "body"     => "livewire.cliente.crud",
+        "id"        => "createModal",
+        "label"     => "createModalLabel",
+        "title"     => "Cadastrar Cliente",
+        "action"    => "Cadastrar",
+        "btn-color" => "primary",
+        "function"  => "create()",
+        "valign"    => true, // true || false
+        "scroll"    => true, // true || false
+        "size"      => "lg", // sm, lg, xl
+        "height"    => "100%", 
+        "body"      => "livewire.cliente.crud",
     ]])
 
     @include("components.modal", [ "modal" => [
-        "id"       => "updateModal",
-        "label"    => "updateModalLabel",
-        "title"    => "Atualizar Cliente",
-        "action"   => "Atualizar",
-        "function" => "update()",
-        "valign"   => true, // true || false
-        "scroll"   => true, // true || false
-        "size"     => "lg", // sm, lg, xl
-        "height"   => "100%", 
-        "body"     => "livewire.cliente.crud",
+        "id"        => "updateModal",
+        "label"     => "updateModalLabel",
+        "title"     => "Atualizar Cliente",
+        "action"    => "Atualizar",
+        "btn-color" => "primary",
+        "function"  => "update()",
+        "valign"    => true, // true || false
+        "scroll"    => true, // true || false
+        "size"      => "lg", // sm, lg, xl
+        "height"    => "100%", 
+        "body"      => "livewire.cliente.crud",
     ]])
 
     @include("components.modal", [ "modal" => [
-        "id"       => "cardModal",
-        "label"    => "cardModalLabel",
-        "title"    => "Detalhes do Cliente",
-        "action"   => "",
-        "function" => "",
-        "valign"   => true, // true || false
-        "scroll"   => false, // true || false
-        "size"     => "", // sm, lg, xl
-        "height"   => "", 
-        "body"     => "livewire.cliente.card",
+        "id"        => "deleteModal",
+        "label"     => "deleteModalLabel",
+        "title"     => "Excluir Cliente",
+        "action"    => "Excluir",
+        "btn-color" => "danger",
+        "function"  => "delete()",
+        "valign"    => true, // true || false
+        "scroll"    => false, // true || false
+        "size"      => "", // sm, lg, xl
+        "height"    => "", 
+        "body"      => "components.confirm",
+    ]])
+
+    @include("components.modal", [ "modal" => [
+        "id"        => "cardModal",
+        "label"     => "cardModalLabel",
+        "title"     => "Detalhes do Cliente",
+        "action"    => "",
+        "btn-color" => "primary",
+        "function"  => "",
+        "valign"    => true, // true || false
+        "scroll"    => false, // true || false
+        "size"      => "", // sm, lg, xl
+        "height"    => "", 
+        "body"      => "livewire.cliente.card",
     ]])
     
 </div>

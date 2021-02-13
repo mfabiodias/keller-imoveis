@@ -1,0 +1,1 @@
+Deseja realmente excluir {{ $confirmLabel }}
